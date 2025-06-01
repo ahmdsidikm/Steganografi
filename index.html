@@ -450,17 +450,33 @@
                 button.classList.add('bg-white', 'shadow-md', 'text-amber-600');
                 button.classList.remove('text-gray-500');
 
-                // Menyembunyikan semua tab pane dan menampilkan yang sesuai
-                tabPanes.forEach(pane => {
-                    pane.classList.remove('active'); // Hapus kelas active untuk transisi
-                    pane.classList.add('hidden');
-                    if (pane.id === `${tabId}-content`) {
-                        setTimeout(() => {
-                            pane.classList.remove('hidden');
-                            pane.classList.add('active'); // Tambahkan kelas active setelah timeout singkat
-                        }, 50); // Penundaan singkat untuk transisi
-                    }
-                });
+                // Dapatkan panel tab yang saat ini aktif
+                const currentActivePane = document.querySelector('.tab-pane.active');
+                const targetPane = document.getElementById(`${tabId}-content`);
+
+                if (currentActivePane && currentActivePane !== targetPane) {
+                    // Hilangkan kelas 'active' dari panel yang sedang aktif untuk memulai fade-out
+                    currentActivePane.classList.remove('active');
+
+                    // Setelah transisi fade-out selesai (0.5 detik), sembunyikan panel secara penuh
+                    setTimeout(() => {
+                        currentActivePane.classList.add('hidden');
+                        
+                        // Sekarang tampilkan dan fade-in panel target
+                        if (targetPane) {
+                            targetPane.classList.remove('hidden'); // Jadikan terlihat tetapi opacity: 0
+                            setTimeout(() => {
+                                targetPane.classList.add('active'); // Fade-in
+                            }, 10); // Penundaan kecil untuk memastikan display:block sudah dirender sebelum transisi opacity
+                        }
+                    }, 500); // Tunggu hingga fade-out selesai (sesuai dengan durasi transisi CSS)
+                } else if (targetPane && !targetPane.classList.contains('active')) {
+                    // Jika tidak ada panel aktif, atau mengklik tab yang sama, pastikan saja aktif
+                    targetPane.classList.remove('hidden');
+                    setTimeout(() => {
+                        targetPane.classList.add('active');
+                    }, 10);
+                }
             });
         });
 
