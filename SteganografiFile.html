@@ -8,12 +8,43 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* Ensure smooth transitions for UI elements */
+    /* Memastikan transisi yang mulus untuk elemen UI */
     .transition-all { transition: all 0.3s ease; }
-    /* Basic styling for the body to ensure full height and font */
+    /* Gaya dasar untuk body untuk memastikan tinggi penuh dan font */
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #fdfaf6; /* Light cream background */
+      background-color: #fdfaf6; /* Latar belakang krem muda */
+    }
+    /* Gaya untuk indikator memuat */
+    .loading-spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid #fff;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Gaya untuk animasi gambar */
+    .image-fade-in {
+      animation: fadeInScale 0.5s ease-out forwards;
+      opacity: 0; /* Mulai dengan tidak terlihat */
+      transform: scale(0.95); /* Mulai sedikit lebih kecil */
+    }
+
+    @keyframes fadeInScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
   </style>
 </head>
@@ -49,16 +80,17 @@
           </div>
           <button id="embedButton"
             class="w-full flex items-center justify-center bg-green-500 text-white py-3 px-4 rounded-md hover:bg-green-600 transition-all font-semibold shadow-md">
-            Sembunyikan File
+            <span id="embedButtonText">Sembunyikan File</span>
+            <div id="embedSpinner" class="loading-spinner ml-2 hidden"></div>
           </button>
 
           <div class="space-y-4 mt-6 relative">
-            <div class="flex justify-around gap-4">
-              <div class="text-center">
+            <div class="flex flex-col sm:flex-row justify-around gap-4">
+              <div class="text-center flex-1">
                 <h4 class="text-lg font-semibold text-gray-700 mb-2">Gambar Asli:</h4>
                 <img id="outputImageOriginal" class="w-full h-48 object-contain border border-gray-300 rounded-md shadow-sm bg-gray-100 flex items-center justify-center text-gray-500" alt="Gambar Asli" src="https://placehold.co/200x150/e0e0e0/555555?text=Gambar+Asli">
               </div>
-              <div class="text-center">
+              <div class="text-center flex-1">
                 <h4 class="text-lg font-semibold text-gray-700 mb-2">Gambar Stego:</h4>
                 <img id="outputImageStego" class="hidden w-full h-48 object-contain border border-gray-300 rounded-md shadow-sm bg-gray-100 flex items-center justify-center text-gray-500" alt="Gambar Stego" src="https://placehold.co/200x150/e0e0e0/555555?text=Gambar+Stego">
                 <a id="downloadLink" class="hidden block text-center bg-green-600 text-white py-2 px-3 mt-4 rounded-md hover:bg-green-700 transition-all font-semibold shadow-md text-sm">
@@ -66,9 +98,6 @@
                 </a>
               </div>
             </div>
-            <video id="outputVideo" controls class="hidden w-full border border-gray-300 rounded-md shadow-sm"></video>
-            <audio id="outputAudio" controls class="hidden w-full border border-gray-300 rounded-md shadow-sm"></audio>
-            <iframe id="outputPDF" class="hidden w-full border border-gray-300 rounded-md shadow-sm" style="height:300px;"></iframe>
           </div>
         </div>
       </div>
@@ -83,7 +112,8 @@
           </div>
           <button id="decryptButton"
             class="w-full flex items-center justify-center bg-purple-600 text-white py-3 px-4 rounded-md hover:bg-purple-700 transition-all font-semibold shadow-md">
-            Dekripsi File
+            <span id="decryptButtonText">Dekripsi File</span>
+            <div id="decryptSpinner" class="loading-spinner ml-2 hidden"></div>
           </button>
 
           <div id="fileFormatSelection" class="hidden space-y-2 mt-4">
@@ -124,40 +154,36 @@
   </footer>
 
   <script>
-    // Variable to store the original file name (not used in the provided logic, but kept for context)
-    let fileName = '';
-
     /**
-     * Displays a status message to the user.
-     * @param {string} msg - The message to display.
-     * @param {boolean} isError - True if the message is an error, false otherwise.
-     * @param {string} [targetElementId] - This parameter is no longer used as animations are removed.
+     * Menampilkan pesan status kepada pengguna.
+     * @param {string} msg - Pesan yang akan ditampilkan.
+     * @param {boolean} isError - True jika pesan adalah error, false jika bukan.
      */
-    function showMessage(msg, isError, targetElementId) {
+    function showMessage(msg, isError) {
       const statusEl = document.getElementById('statusMessage');
 
-      // Hide any existing status message
+      // Sembunyikan pesan status yang ada
       statusEl.classList.add('hidden');
 
       if (isError) {
-        // For errors, display the text message
+        // Untuk error, tampilkan pesan teks
         statusEl.textContent = msg;
         statusEl.className = `text-center text-base font-medium transition-all py-2 px-4 rounded-md bg-red-100 text-red-700`;
         statusEl.classList.remove('hidden');
-        setTimeout(() => statusEl.classList.add('hidden'), 5000); // Hide after 5 seconds
+        setTimeout(() => statusEl.classList.add('hidden'), 5000); // Sembunyikan setelah 5 detik
       } else {
-        // For success, display the text message
+        // Untuk sukses, tampilkan pesan teks
         statusEl.textContent = msg;
         statusEl.className = `text-center text-base font-medium transition-all py-2 px-4 rounded-md bg-green-100 text-green-700`;
         statusEl.classList.remove('hidden');
-        setTimeout(() => statusEl.classList.add('hidden'), 5000); // Hide after 5 seconds
+        setTimeout(() => statusEl.classList.add('hidden'), 5000); // Sembunyikan setelah 5 detik
       }
     }
 
     /**
-     * Reads a File object as an ArrayBuffer.
-     * @param {File} file - The File object to read.
-     * @returns {Promise<ArrayBuffer>} A promise that resolves with the ArrayBuffer.
+     * Membaca objek File sebagai ArrayBuffer.
+     * @param {File} file - Objek File yang akan dibaca.
+     * @returns {Promise<ArrayBuffer>} Sebuah promise yang di-resolve dengan ArrayBuffer.
      */
     function readFileAsArrayBuffer(file) {
       return new Promise((resolve, reject) => {
@@ -169,9 +195,9 @@
     }
 
     /**
-     * Returns the MIME type for a given file extension.
-     * @param {string} ext - The file extension (e.g., 'jpg', 'pdf').
-     * @returns {string} The corresponding MIME type.
+     * Mengembalikan tipe MIME untuk ekstensi file yang diberikan.
+     * @param {string} ext - Ekstensi file (misalnya, 'jpg', 'pdf').
+     * @returns {string} Tipe MIME yang sesuai.
      */
     function getMimeType(ext) {
       const mimeTypes = {
@@ -181,45 +207,63 @@
         zip: 'application/zip', rar: 'application/x-rar-compressed',
         doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
       };
-      return mimeTypes[ext] || 'application/octet-stream'; // Default to generic binary stream
+      return mimeTypes[ext] || 'application/octet-stream'; // Default ke stream biner generik
     }
 
-    // Event listener for the "Sisipkan File" (Embed File) button
+    // Event listener untuk tombol "Sembunyikan File"
     document.getElementById('embedButton').onclick = async () => {
       const mediaFile = document.getElementById('mediaInput').files[0];
       const secretFile = document.getElementById('fileInput').files[0];
+      const embedButton = document.getElementById('embedButton');
+      const embedButtonText = document.getElementById('embedButtonText');
+      const embedSpinner = document.getElementById('embedSpinner');
 
-      // Validate if both files are selected
+      // Validasi jika kedua file dipilih
       if (!mediaFile || !secretFile) {
         return showMessage('Pilih gambar pembawa dan file yang akan disembunyikan!', true);
       }
 
-      // Display original image preview
+      // Tampilkan indikator memuat
+      embedButton.disabled = true;
+      embedButtonText.classList.add('hidden');
+      embedSpinner.classList.remove('hidden');
+      showMessage('Menyisipkan file...', false);
+
+      // Sembunyikan semua elemen output sebelumnya dan hapus kelas animasi
+      const outputImageStego = document.getElementById('outputImageStego');
+      outputImageStego.classList.add('hidden');
+      outputImageStego.classList.remove('image-fade-in'); // Hapus kelas animasi
+      document.getElementById('downloadLink').classList.add('hidden');
+
+      // Tampilkan pratinjau gambar asli
       const readerOriginal = new FileReader();
       readerOriginal.onload = (e) => {
-        document.getElementById('outputImageOriginal').src = e.target.result;
-        document.getElementById('outputImageOriginal').classList.remove('hidden');
+        const outputImageOriginal = document.getElementById('outputImageOriginal');
+        outputImageOriginal.src = e.target.result;
+        outputImageOriginal.classList.remove('hidden');
+        outputImageOriginal.classList.remove('image-fade-in'); // Hapus kelas animasi
+        // Tambahkan kembali kelas animasi setelah gambar dimuat
+        setTimeout(() => outputImageOriginal.classList.add('image-fade-in'), 10);
       };
       readerOriginal.readAsDataURL(mediaFile);
 
-
       try {
-        // Read media and secret files as ArrayBuffers
+        // Baca file media dan rahasia sebagai ArrayBuffers
         const mediaBuffer = await readFileAsArrayBuffer(mediaFile);
         const secretBuffer = await readFileAsArrayBuffer(secretFile);
 
-        // Create a new Uint8Array to combine the media, secret file, and its size
-        // The size of the secret file is stored in the last 4 bytes of the combined buffer
+        // Buat Uint8Array baru untuk menggabungkan media, file rahasia, dan ukurannya
+        // Ukuran file rahasia disimpan dalam 4 byte terakhir dari buffer gabungan
         const combinedArray = new Uint8Array(mediaBuffer.byteLength + secretBuffer.byteLength + 4);
 
-        // Copy media data
+        // Salin data media
         combinedArray.set(new Uint8Array(mediaBuffer), 0);
-        // Copy secret file data after media data
+        // Salin data file rahasia setelah data media
         combinedArray.set(new Uint8Array(secretBuffer), mediaBuffer.byteLength);
 
-        // Get the size of the secret file
+        // Dapatkan ukuran file rahasia
         const secretFileSize = secretBuffer.byteLength;
-        // Store the size in the last 4 bytes (big-endian)
+        // Simpan ukuran dalam 4 byte terakhir (big-endian)
         combinedArray.set([
           (secretFileSize >> 24) & 0xFF,
           (secretFileSize >> 16) & 0xFF,
@@ -227,57 +271,74 @@
           secretFileSize & 0xFF
         ], mediaBuffer.byteLength + secretBuffer.byteLength);
 
-        // Create a Blob from the combined data with the original media's MIME type
+        // Buat Blob dari data gabungan dengan tipe MIME media asli
         const outputBlob = new Blob([combinedArray], { type: mediaFile.type });
         const outputUrl = URL.createObjectURL(outputBlob);
 
-        // Hide all previous output elements
-        ['outputVideo', 'outputAudio', 'outputPDF'].forEach(id => document.getElementById(id).classList.add('hidden'));
-
-        // Display the output based on the media type
+        // Tampilkan output berdasarkan tipe media
         if (mediaFile.type.startsWith('image/')) {
-          const imageElement = document.getElementById('outputImageStego');
-          imageElement.src = outputUrl;
-          imageElement.classList.remove('hidden');
+          outputImageStego.src = outputUrl;
+          outputImageStego.classList.remove('hidden');
+          // Tambahkan kembali kelas animasi setelah gambar dimuat
+          setTimeout(() => outputImageStego.classList.add('image-fade-in'), 10);
+
           const downloadLink = document.getElementById('downloadLink');
           downloadLink.href = outputUrl;
           downloadLink.download = `stego_image.${mediaFile.name.split('.').pop() || 'png'}`;
           downloadLink.classList.remove('hidden');
-          showMessage('Penyisipan file berhasil!', false); // No target element for animation
+          showMessage('Penyisipan file berhasil!', false);
         } else {
-          // Fallback for non-image media types (though UI is image-focused)
+          // Fallback untuk tipe media non-gambar (meskipun UI berfokus pada gambar)
           const downloadLink = document.getElementById('downloadLink');
           downloadLink.href = outputUrl;
           downloadLink.download = `steganografi_output.${mediaFile.name.split('.').pop() || 'bin'}`;
           downloadLink.classList.remove('hidden');
-          showMessage('Penyisipan file berhasil!', false); // No target element for animation
+          showMessage('Penyisipan file berhasil!', false);
         }
       } catch (error) {
         showMessage(`Error saat menyisipkan file: ${error.message}`, true);
+      } finally {
+        // Sembunyikan indikator memuat
+        embedButton.disabled = false;
+        embedButtonText.classList.remove('hidden');
+        embedSpinner.classList.add('hidden');
       }
     };
 
-    // Event listener for the "Dekripsi File" (Decrypt File) button
+    // Event listener untuk tombol "Dekripsi File"
     document.getElementById('decryptButton').onclick = () => {
       const encryptedMedia = document.getElementById('encryptedMediaInput').files[0];
       if (!encryptedMedia) {
         return showMessage('Pilih file media terenkripsi untuk dekripsi!', true);
       }
-      // Show the file format selection dropdown
+      // Tampilkan dropdown pilihan format file
       document.getElementById('fileFormatSelection').classList.remove('hidden');
-      // Hide any previously displayed decrypted content or download link
+      // Sembunyikan konten terdekripsi atau tautan unduhan yang ditampilkan sebelumnya dan hapus kelas animasi
       document.getElementById('decryptedVideo').classList.add('hidden');
-      document.getElementById('decryptedImage').classList.add('hidden');
+      const decryptedImage = document.getElementById('decryptedImage');
+      decryptedImage.classList.add('hidden');
+      decryptedImage.classList.remove('image-fade-in'); // Hapus kelas animasi
       document.getElementById('downloadFileLink').classList.add('hidden');
+      showMessage('Pilih format file untuk dekripsi.', false);
     };
 
-    // Event listener for the file format selection dropdown during decryption
+    // Event listener untuk dropdown pilihan format file selama dekripsi
     document.getElementById('fileFormat').onchange = async function() {
       const selectedFormat = this.value;
+      const decryptButton = document.getElementById('decryptButton');
+      const decryptButtonText = document.getElementById('decryptButtonText');
+      const decryptSpinner = document.getElementById('decryptSpinner');
+
       if (!selectedFormat) {
-        // If no format is selected, do nothing
+        // Jika tidak ada format yang dipilih, jangan lakukan apa-apa
         return;
       }
+
+      // Tampilkan indikator memuat
+      decryptButton.disabled = true;
+      decryptButtonText.classList.add('hidden');
+      decryptSpinner.classList.remove('hidden');
+      showMessage('Mendekripsi file...', false);
 
       try {
         const encryptedMedia = document.getElementById('encryptedMediaInput').files[0];
@@ -288,60 +349,72 @@
         const buffer = await readFileAsArrayBuffer(encryptedMedia);
         const uint8Array = new Uint8Array(buffer);
 
-        // Extract the size of the hidden file from the last 4 bytes
+        // Ekstrak ukuran file tersembunyi dari 4 byte terakhir
         const hiddenFileSize = (uint8Array[uint8Array.length - 4] << 24) |
                                (uint8Array[uint8Array.length - 3] << 16) |
                                (uint8Array[uint8Array.length - 2] << 8) |
                                uint8Array[uint8Array.length - 1];
 
-        // Validate the extracted size
+        // Validasi ukuran yang diekstrak
         if (hiddenFileSize <= 0 || hiddenFileSize > buffer.byteLength - 4) {
           throw new Error('Tidak dapat menemukan file tersembunyi atau ukuran file tidak valid.');
         }
 
-        // Calculate the starting position of the hidden file data
+        // Hitung posisi awal data file tersembunyi
         const hiddenFileStart = buffer.byteLength - 4 - hiddenFileSize;
-        // Extract the hidden file's ArrayBuffer
+        // Ekstrak ArrayBuffer file tersembunyi
         const hiddenFileBuffer = buffer.slice(hiddenFileStart, buffer.byteLength - 4);
 
-        // Create a Blob from the hidden file data with the selected MIME type
+        // Buat Blob dari data file tersembunyi dengan tipe MIME yang dipilih
         const decryptedBlob = new Blob([hiddenFileBuffer], { type: getMimeType(selectedFormat) });
         const decryptedUrl = URL.createObjectURL(decryptedBlob);
 
-        // Hide all previous decrypted output elements
+        // Sembunyikan semua elemen output dekripsi sebelumnya dan hapus kelas animasi
         document.getElementById('decryptedVideo').classList.add('hidden');
-        document.getElementById('decryptedImage').classList.add('hidden');
-        document.getElementById('downloadFileLink').classList.add('hidden'); // Ensure download link is hidden initially
+        const decryptedImage = document.getElementById('decryptedImage');
+        decryptedImage.classList.add('hidden');
+        decryptedImage.classList.remove('image-fade-in'); // Hapus kelas animasi
+        document.getElementById('downloadFileLink').classList.add('hidden'); // Pastikan tautan unduhan tersembunyi di awal
 
-        // Display the decrypted content based on the selected format
+        // Tampilkan konten terdekripsi berdasarkan format yang dipilih
         if (selectedFormat === 'mp4') {
           const videoElement = document.getElementById('decryptedVideo');
           videoElement.src = decryptedUrl;
           videoElement.classList.remove('hidden');
-          showMessage('Dekripsi file berhasil!', false); // No target element for animation
-        } else if (['jpg', 'jpeg', 'png'].includes(selectedFormat)) {
-          const imageElement = document.getElementById('decryptedImage');
-          imageElement.src = decryptedUrl;
-          imageElement.classList.remove('hidden');
-          // Show the download link for decrypted images
           const downloadFileLink = document.getElementById('downloadFileLink');
           downloadFileLink.href = decryptedUrl;
-          downloadFileLink.download = `decrypted_image.${selectedFormat}`; // Suggest a filename
+          downloadFileLink.download = `decrypted_video.${selectedFormat}`;
           downloadFileLink.classList.remove('hidden');
-          showMessage('Dekripsi file berhasil!', false); // No target element for animation
-        } else {
-          // For other decrypted file types, show download link
+          showMessage('Dekripsi file berhasil!', false);
+        } else if (['jpg', 'jpeg', 'png'].includes(selectedFormat)) {
+          decryptedImage.src = decryptedUrl;
+          decryptedImage.classList.remove('hidden');
+          // Tampilkan tautan unduhan untuk gambar terdekripsi dan tambahkan kelas animasi
+          setTimeout(() => decryptedImage.classList.add('image-fade-in'), 10);
+
           const downloadFileLink = document.getElementById('downloadFileLink');
           downloadFileLink.href = decryptedUrl;
-          downloadFileLink.download = `decrypted_file.${selectedFormat}`; // Suggest a filename
-          downloadFileLink.classList.remove('hidden'); // Show the download link
-          showMessage('Dekripsi file berhasil!', false); // No target element for animation
+          downloadFileLink.download = `decrypted_image.${selectedFormat}`; // Sarankan nama file
+          downloadFileLink.classList.remove('hidden');
+          showMessage('Dekripsi file berhasil!', false);
+        } else {
+          // Untuk tipe file terdekripsi lainnya, tampilkan tautan unduhan
+          const downloadFileLink = document.getElementById('downloadFileLink');
+          downloadFileLink.href = decryptedUrl;
+          downloadFileLink.download = `decrypted_file.${selectedFormat}`; // Sarankan nama file
+          downloadFileLink.classList.remove('hidden'); // Tampilkan tautan unduhan
+          showMessage('Dekripsi file berhasil!', false);
         }
       } catch (error) {
         showMessage(`Error saat mendekripsi file: ${error.message}`, true);
-        // Hide file format selection and download link on error
+        // Sembunyikan pilihan format file dan tautan unduhan saat terjadi error
         document.getElementById('fileFormatSelection').classList.add('hidden');
         document.getElementById('downloadFileLink').classList.add('hidden');
+      } finally {
+        // Sembunyikan indikator memuat
+        decryptButton.disabled = false;
+        decryptButtonText.classList.remove('hidden');
+        decryptSpinner.classList.add('hidden');
       }
     };
   </script>
