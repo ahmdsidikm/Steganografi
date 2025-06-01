@@ -174,20 +174,6 @@
                      <div id="teks-content" class="tab-pane hidden">
                         <h4 class="font-bold text-xl mb-3">Steganografi Teks</h4>
                         <p class="text-gray-600">Menantang karena kurangnya redundansi. Metode dapat berupa modifikasi spasi putih, penggunaan sinonim, atau dengan teknik modern menggunakan <span class="font-semibold">Large Language Models (LLM)</span> untuk menghasilkan teks yang secara statistik normal namun mengandung pesan tersembunyi.</p>
-                        <div class="mt-8 pt-6 border-t border-gray-200">
-                            <h5 class="font-bold text-xl mb-4 text-gray-900">✨ Coba Hasilkan Teks Penutup ✨</h5>
-                            <p class="text-gray-600 mb-4">Ingin melihat bagaimana LLM dapat membuat teks yang tampak normal untuk menyembunyikan pesan? Klik tombol di bawah ini untuk menghasilkan contoh teks penutup.</p>
-                            <button id="generate-text-btn" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 flex items-center justify-center">
-                                <span id="button-text">Hasilkan Teks Penutup</span>
-                                <div id="loading-spinner" class="spinner ml-2 hidden"></div>
-                            </button>
-                            <div id="generated-text-output" class="mt-6 bg-gray-100 p-4 rounded-lg text-gray-700 italic hidden">
-                                <p>Teks yang dihasilkan akan muncul di sini.</p>
-                            </div>
-                            <div id="error-message" class="mt-4 text-red-600 hidden">
-                                Terjadi kesalahan saat menghasilkan teks. Silakan coba lagi.
-                            </div>
-                        </div>
                     </div>
                     <div id="jaringan-content" class="tab-pane hidden">
                         <h4 class="font-bold text-xl mb-3">Steganografi Jaringan</h4>
@@ -270,21 +256,6 @@
                  <div class="text-center">
                     <div class="text-6xl">🔍</div>
                     <p class="text-gray-500 mt-2">Mencari jejak digital yang tak terlihat.</p>
-                </div>
-            </div>
-            <div class="mt-8 pt-6 border-t border-gray-200">
-                <h5 class="font-bold text-xl mb-4 text-gray-900">✨ Analisis Potensi Steganografi Teks ✨</h5>
-                <p class="text-gray-600 mb-4">Masukkan sepotong teks di bawah ini dan biarkan AI memberikan analisis konseptual tentang apakah teks tersebut tampak normal atau memiliki karakteristik yang *mungkin* menarik bagi steganografi.</p>
-                <textarea id="text-analysis-input" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 mb-4" rows="5" placeholder="Masukkan teks di sini untuk dianalisis..."></textarea>
-                <button id="analyze-text-btn" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 flex items-center justify-center">
-                    <span id="analyze-button-text">Analisis Teks</span>
-                    <div id="analyze-loading-spinner" class="spinner ml-2 hidden"></div>
-                </button>
-                <div id="analysis-output" class="mt-6 bg-gray-100 p-4 rounded-lg text-gray-700 italic hidden">
-                    <p>Hasil analisis akan muncul di sini.</p>
-                </div>
-                <div id="analysis-error-message" class="mt-4 text-red-600 hidden">
-                    Terjadi kesalahan saat menganalisis teks. Silakan coba lagi.
                 </div>
             </div>
         </section>
@@ -445,115 +416,6 @@
             }
             if (!mobileStartButton.contains(event.target) && !mobileStartDropdown.contains(event.target)) {
                 mobileStartDropdown.classList.add('hidden');
-            }
-        });
-
-
-        // Gemini API integration for text generation
-        const generateTextBtn = document.getElementById('generate-text-btn');
-        const generatedTextOutput = document.getElementById('generated-text-output');
-        const loadingSpinner = document.getElementById('loading-spinner');
-        const buttonText = document.getElementById('button-text');
-        const errorMessage = document.getElementById('error-message');
-
-        generateTextBtn.addEventListener('click', async () => {
-            generatedTextOutput.classList.add('hidden');
-            errorMessage.classList.add('hidden');
-            loadingSpinner.classList.remove('hidden');
-            buttonText.textContent = 'Menghasilkan...';
-            generateTextBtn.disabled = true;
-
-            try {
-                let chatHistory = [];
-                const prompt = "Hasilkan satu paragraf singkat, sekitar 50-70 kata, yang terdengar seperti deskripsi cuaca sehari-hari atau pengamatan sederhana tentang alam, tanpa ada indikasi pesan tersembunyi. Misalnya, tentang hari yang cerah atau awan yang bergerak. Pastikan teksnya sangat netral dan umum.";
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                const payload = { contents: chatHistory };
-                const apiKey = ""; // If you want to use models other than gemini-2.0-flash or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    generatedTextOutput.textContent = text;
-                    generatedTextOutput.classList.remove('hidden');
-                } else {
-                    errorMessage.classList.remove('hidden');
-                    console.error('Unexpected API response structure:', result);
-                }
-            } catch (error) {
-                errorMessage.classList.remove('hidden');
-                console.error('Error calling Gemini API:', error);
-            } finally {
-                loadingSpinner.classList.add('hidden');
-                buttonText.textContent = 'Hasilkan Teks Penutup';
-                generateTextBtn.disabled = false;
-            }
-        });
-
-        // Gemini API integration for text analysis
-        const textAnalysisInput = document.getElementById('text-analysis-input');
-        const analyzeTextBtn = document.getElementById('analyze-text-btn');
-        const analysisOutput = document.getElementById('analysis-output');
-        const analyzeLoadingSpinner = document.getElementById('analyze-loading-spinner');
-        const analyzeButtonText = document.getElementById('analyze-button-text');
-        const analysisErrorMessage = document.getElementById('analysis-error-message');
-
-        analyzeTextBtn.addEventListener('click', async () => {
-            const inputText = textAnalysisInput.value.trim();
-            if (!inputText) {
-                analysisOutput.textContent = 'Silakan masukkan teks untuk dianalisis.';
-                analysisOutput.classList.remove('hidden');
-                return;
-            }
-
-            analysisOutput.classList.add('hidden');
-            analysisErrorMessage.classList.add('hidden');
-            analyzeLoadingSpinner.classList.remove('hidden');
-            analyzeButtonText.textContent = 'Menganalisis...';
-            analyzeTextBtn.disabled = true;
-
-            try {
-                let chatHistory = [];
-                const prompt = `Sebagai seorang ahli steganografi, periksa teks berikut untuk melihat apakah ada pola atau anomali yang *mungkin* mengindikasikan adanya pesan tersembunyi, atau apakah teks tersebut terdengar sepenuhnya normal dan tidak mencurigakan. Berikan analisis singkat (sekitar 50-70 kata) dan umum, fokus pada karakteristik linguistik atau struktur yang bisa menjadi 'media penutup' yang baik atau 'mencurigakan'. Jangan mencoba mendeteksi pesan yang sebenarnya, hanya menilai potensi steganografi. Teks: ${inputText}`;
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                const payload = { contents: chatHistory };
-                const apiKey = ""; 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    analysisOutput.textContent = text;
-                    analysisOutput.classList.remove('hidden');
-                } else {
-                    analysisErrorMessage.classList.remove('hidden');
-                    console.error('Unexpected API response structure:', result);
-                }
-            } catch (error) {
-                analysisErrorMessage.classList.remove('hidden');
-                console.error('Error calling Gemini API:', error);
-            } finally {
-                analyzeLoadingSpinner.classList.add('hidden');
-                analyzeButtonText.textContent = 'Analisis Teks';
-                analyzeTextBtn.disabled = false;
             }
         });
     });
