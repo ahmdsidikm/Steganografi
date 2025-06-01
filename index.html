@@ -86,10 +86,12 @@
         /* Transisi untuk tab pane */
         .tab-pane {
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transform: translateY(10px); /* Tambahkan pergeseran awal */
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
         }
         .tab-pane.active {
             opacity: 1;
+            transform: translateY(0); /* Kembali ke posisi normal */
         }
 
         /* Gaya untuk animasi scroll-in */
@@ -202,20 +204,20 @@
                     <button data-tab="jaringan" class="tab-btn flex-1 py-2 px-4 rounded-md text-sm sm:text-base font-semibold text-gray-500">Jaringan</button>
                 </div>
 
-                <div id="tab-content" class="bg-white p-8 rounded-lg shadow-lg min-h-[250px]">
-                    <div id="gambar-content" class="tab-pane active">
+                <div id="tab-content" class="bg-white p-8 rounded-lg shadow-lg min-h-[250px] relative overflow-hidden">
+                    <div id="gambar-content" class="tab-pane active absolute inset-0 p-8">
                         <h4 class="font-bold text-xl mb-3">Steganografi Gambar</h4>
                         <p class="text-gray-600">Paling populer karena redundansi data pada gambar. Teknik umum termasuk <span class="font-semibold">LSB (Least Significant Bit)</span>, di mana data disisipkan ke dalam bit paling tidak signifikan dari piksel gambar. Teknik <span class="font-semibold">Domain Transformasi (DCT, DWT)</span> menyembunyikan data dalam koefisien frekuensi gambar, membuatnya lebih tahan terhadap kompresi.</p>
                     </div>
-                    <div id="audio-content" class="tab-pane hidden">
+                    <div id="audio-content" class="tab-pane absolute inset-0 p-8 hidden">
                         <h4 class="font-bold text-xl mb-3">Steganografi Audio</h4>
                         <p class="text-gray-600">Menyembunyikan pesan dalam file audio. Tekniknya meliputi <span class="font-semibold">LSB Coding</span> pada sampel audio, <span class="font-semibold">Phase Coding</span> yang memanipulasi fase sinyal, dan <span class="font-semibold">Echo Hiding</span> yang menyematkan data sebagai gema yang tidak terdengar oleh telinga manusia.</p>
                     </div>
-                     <div id="teks-content" class="tab-pane hidden">
+                     <div id="teks-content" class="tab-pane absolute inset-0 p-8 hidden">
                         <h4 class="font-bold text-xl mb-3">Steganografi Teks</h4>
                         <p class="text-gray-600">Menantang karena kurangnya redundansi. Metode dapat berupa modifikasi spasi putih, penggunaan sinonim, atau dengan teknik modern menggunakan <span class="font-semibold">Large Language Models (LLM)</span> untuk menghasilkan teks yang secara statistik normal namun mengandung pesan tersembunyi.</p>
                     </div>
-                    <div id="jaringan-content" class="tab-pane hidden">
+                    <div id="jaringan-content" class="tab-pane absolute inset-0 p-8 hidden">
                         <h4 class="font-bold text-xl mb-3">Steganografi Jaringan</h4>
                         <p class="text-gray-600">Menyembunyikan data dalam protokol jaringan seperti TCP/IP. Ini dilakukan dengan memanipulasi bidang-bidang yang jarang digunakan atau redundan di *header* paket, seperti bidang 'Flags' atau 'Identification' di IPv4, untuk menciptakan saluran komunikasi rahasia (*covert channel*).</p>
                     </div>
@@ -418,17 +420,24 @@
                 button.classList.add('bg-white', 'shadow-md', 'text-amber-600');
                 button.classList.remove('text-gray-500');
 
-                // Menyembunyikan semua tab pane dan menampilkan yang sesuai
+                // Menyembunyikan semua tab pane
                 tabPanes.forEach(pane => {
-                    pane.classList.remove('active'); // Hapus kelas active untuk transisi
+                    pane.classList.remove('active');
                     pane.classList.add('hidden');
-                    if (pane.id === `${tabId}-content`) {
-                        setTimeout(() => {
-                            pane.classList.remove('hidden');
-                            pane.classList.add('active'); // Tambahkan kelas active setelah timeout singkat
-                        }, 50); // Penundaan singkat untuk transisi
-                    }
                 });
+
+                // Menampilkan tab pane yang sesuai dengan animasi
+                const targetPane = document.getElementById(`${tabId}-content`);
+                if (targetPane) {
+                    // Set timeout untuk memungkinkan transisi 'hidden' sebelum 'active' ditambahkan
+                    // Ini untuk memastikan animasi 'transform' dan 'opacity' di-reset
+                    setTimeout(() => {
+                        targetPane.classList.remove('hidden');
+                        // Paksa reflow agar transisi dimulai dari keadaan awal
+                        void targetPane.offsetWidth; 
+                        targetPane.classList.add('active');
+                    }, 50); 
+                }
             });
         });
 
