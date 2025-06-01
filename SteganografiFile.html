@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steganografi: Enkripsi dan Dekripsi File ke Media</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Ensure smooth transitions for UI elements */
+    .transition-all { transition: all 0.3s ease; }
+    /* Basic styling for the body to ensure full height and font */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f3f4f6; /* A light gray for a clean look */
+    }
+
+    /* Styles for the interactive checkmark animation */
+    #dynamicSuccessAnimation { /* Added ID for the dynamic overlay */
+      transition: opacity 0.5s ease-out; /* Add transition for the overlay itself */
+    }
+    #checkmark-svg {
+      width: 80px; /* Larger size for the checkmark */
+      height: 80px;
+      stroke-width: 4; /* Thicker stroke for visibility */
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      stroke: #22c55e; /* Green color for success */
+      transform: scale(0); /* Start hidden */
+      opacity: 0;
+      transform-origin: center center; /* Ensure scale originates from center */
+      transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Smooth transition for initial pop */
+    }
+
+    #checkmark-svg.animate {
+      transform: scale(1); /* Scale in */
+      opacity: 1;
+    }
+
+    #checkmark-svg.pop {
+      animation: popEffect 0.3s ease-out; /* Add a quick pop effect */
+    }
+
+    @keyframes popEffect {
+      0% { transform: scale(0.8); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    #checkmark-path {
+      stroke-dasharray: 160; /* Length of the path for drawing animation */
+      stroke-dashoffset: 160; /* Start hidden */
+      transition: stroke-dashoffset 0.6s ease-in-out; /* Animation duration for drawing */
+    }
+
+    #checkmark-path.draw {
+      stroke-dashoffset: 0; /* Draw the path */
+    }
+
+    #animationMessage {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s ease-in, transform 0.4s ease-in;
+    }
+
+    #animationMessage.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+  <nav class="bg-white shadow-sm">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-orange-600">Steganografi File</h1> </div>
+  </nav>
+
+  <main class="container mx-auto p-6 flex-grow">
+    <div class="bg-white p-8 rounded-lg shadow-lg">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="space-y-6">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4">Sisipkan File ke Media</h2>
+          <div class="space-y-2">
+            <label for="mediaInput" class="block text-base font-medium text-gray-700">Pilih Media</label>
+            <input type="file" id="mediaInput" accept="video/*,audio/*,image/*,*/*"
+              class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-700 shadow-sm">
+          </div>
+          <div class="space-y-2">
+            <label for="fileInput" class="block text-base font-medium text-gray-700">Pilih File</label>
+            <input type="file" id="fileInput" accept="*/*"
+              class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-700 shadow-sm">
+          </div>
+          <button id="embedButton"
+            class="w-full flex items-center justify-center bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-all font-semibold shadow-md">
+            <i class="fas fa-lock mr-2"></i> Sisipkan File
+          </button>
+
+          <div class="space-y-4 mt-6 relative"> <h3 class="text-lg font-semibold text-gray-700">Pratinjau Hasil Enkripsi:</h3>
+            <video id="outputVideo" controls class="hidden w-full border border-gray-300 rounded-md shadow-sm"></video>
+            <audio id="outputAudio" controls class="hidden w-full border border-gray-300 rounded-md shadow-sm"></audio>
+            <img id="outputImage" class="hidden w-full border border-gray-300 rounded-md shadow-sm" alt="Encrypted">
+            <iframe id="outputPDF" class="hidden w-full border border-gray-300 rounded-md shadow-sm" style="height:300px;"></iframe>
+            <a id="downloadLink" class="hidden block text-center bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition-all font-semibold shadow-md">
+              <i class="fas fa-download mr-2"></i> Download
+            </a>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4">Dekripsi File dari Media</h2>
+          <div class="space-y-2">
+            <label for="encryptedMediaInput" class="block text-base font-medium text-gray-700">Pilih Media Terenkripsi</label>
+            <input type="file" id="encryptedMediaInput" accept="*/*"
+              class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-700 shadow-sm">
+          </div>
+          <button id="decryptButton"
+            class="w-full flex items-center justify-center bg-red-600 text-white py-3 px-4 rounded-md hover:bg-red-700 transition-all font-semibold shadow-md">
+            <i class="fas fa-unlock mr-2"></i> Dekripsi File
+          </button>
+
+          <div id="fileFormatSelection" class="hidden space-y-2 mt-4">
+            <label for="fileFormat" class="block text-base font-medium text-gray-700">Format Hasil</label>
+            <select id="fileFormat"
+              class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-700 shadow-sm">
+              <option value="">Pilih...</option>
+              <option value="zip">ZIP</option>
+              <option value="rar">RAR</option>
+              <option value="txt">TXT</option>
+              <option value="jpg">JPG</option>
+              <option value="png">PNG</option>
+              <option value="mp3">MP3</option>
+              <option value="mp4">MP4</option>
+              <option value="docx">DOCX</option>
+              <option value="doc">DOC</option>
+              <option value="pdf">PDF</option>
+            </select>
+          </div>
+          <div class="space-y-4 mt-6 relative"> <h3 class="text-lg font-semibold text-gray-700">Pratinjau Hasil Dekripsi:</h3>
+            <video id="decryptedVideo" controls class="hidden w-full border border-gray-300 rounded-md shadow-sm"></video>
+            <img id="decryptedImage" class="hidden w-full border border-gray-300 rounded-md shadow-sm" alt="Decrypted">
+            <a id="downloadFileLink" class="hidden block text-center bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition-all font-semibold shadow-md">
+              <i class="fas fa-download mr-2"></i> Download
+            </a>
+            </div>
+        </div>
+      </div>
+      <div id="statusMessage" class="hidden text-center text-base font-medium mt-8 py-2 px-4 rounded-md"></div>
+    </div>
+  </main>
+
+  <footer class="bg-white shadow-inner mt-8">
+    <div class="container mx-auto px-6 py-4 text-center text-gray-600 text-sm">
+      &copy; 2025 - Steganografi, Inc.
+    </div>
+  </footer>
+
+  <script>
+    // Variable to store the original file name (not used in the provided logic, but kept for context)
+    let fileName = '';
+
+    /**
+     * Creates and returns the HTML structure for the success animation overlay.
+     * @param {string} message - The message to display in the animation.
+     * @returns {HTMLElement} The created div element for the animation overlay.
+     */
+    function createSuccessAnimationOverlay(message) {
+        const overlay = document.createElement('div');
+        overlay.id = 'dynamicSuccessAnimation';
+        // Use Tailwind classes for positioning and styling the overlay
+        // Initial opacity set to 1, and transition for opacity
+        overlay.className = 'absolute inset-0 flex flex-col items-center justify-center bg-gray-800 bg-opacity-50 z-40 rounded-lg opacity-100 transition-opacity duration-500';
+        overlay.innerHTML = `
+            <div id="checkmarkContainer" class="bg-white p-8 rounded-full shadow-xl flex items-center justify-center">
+                <svg id="checkmark-svg" viewBox="0 0 100 100">
+                    <path id="checkmark-path" d="M20,50 L40,70 L80,30"></path>
+                </svg>
+            </div>
+            <p id="animationMessage" class="text-white text-xl mt-4 font-semibold">${message}</p>
+        `;
+        return overlay;
+    }
+
+    /**
+     * Displays a status message to the user or triggers a success animation over a target element.
+     * @param {string} msg - The message to display.
+     * @param {boolean} isError - True if the message is an error, false otherwise.
+     * @param {string} [targetElementId] - The ID of the element over which the success animation should appear.
+     */
+    function showMessage(msg, isError, targetElementId) {
+      const statusEl = document.getElementById('statusMessage');
+
+      // Hide any existing status message
+      statusEl.classList.add('hidden');
+
+      if (isError) {
+        // For errors, display the text message
+        statusEl.textContent = msg;
+        statusEl.className = `text-center text-base font-medium transition-all py-2 px-4 rounded-md bg-red-100 text-red-700`;
+        statusEl.classList.remove('hidden');
+        setTimeout(() => statusEl.classList.add('hidden'), 5000);
+      } else {
+        // For success, display the animation over the target element
+        const targetElement = document.getElementById(targetElementId);
+
+        if (!targetElement) {
+            console.error('Target element for success animation not found:', targetElementId);
+            // Fallback to displaying a standard success message if target not found
+            statusEl.textContent = msg;
+            statusEl.className = `text-center text-base font-medium transition-all py-2 px-4 rounded-md bg-green-100 text-green-700`;
+            statusEl.classList.remove('hidden');
+            setTimeout(() => statusEl.classList.add('hidden'), 5000);
+            return;
+        }
+
+        // Create and append the dynamic success animation overlay
+        const overlay = createSuccessAnimationOverlay(msg);
+        // Ensure the parent of the target element is relative for absolute positioning of the overlay
+        if (targetElement.parentNode.style.position !== 'relative') {
+            targetElement.parentNode.style.position = 'relative';
+        }
+        targetElement.parentNode.appendChild(overlay);
+
+        const checkmarkSvgEl = overlay.querySelector('#checkmark-svg');
+        const checkmarkPathEl = overlay.querySelector('#checkmark-path');
+        const animationMessageEl = overlay.querySelector('#animationMessage');
+
+        // Start checkmark animation with pop effect
+        setTimeout(() => {
+            checkmarkSvgEl.classList.add('animate', 'pop');
+            checkmarkPathEl.classList.add('draw');
+        }, 50); // Small delay to ensure classes are applied for transition
+
+        // Show message after checkmark animation starts
+        setTimeout(() => {
+            animationMessageEl.classList.add('show');
+        }, 600); // Adjust this delay to sync with checkmark drawing
+
+        // Hide the animation after a short duration (e.g., 2.5 seconds total)
+        setTimeout(() => {
+          // Trigger fade-out for the entire overlay
+          overlay.classList.add('opacity-0');
+
+          // Listen for the end of the overlay's opacity transition
+          overlay.addEventListener('transitionend', function handler(e) {
+            // Ensure the transition is for opacity on the overlay itself
+            if (e.propertyName === 'opacity' && e.target === overlay) {
+              overlay.remove(); // Remove the overlay after it has fully faded out
+              overlay.removeEventListener('transitionend', handler); // Clean up listener
+
+              // Show the text message briefly after the animation
+              statusEl.textContent = msg;
+              statusEl.className = `text-center text-base font-medium transition-all py-2 px-4 rounded-md bg-green-100 text-green-700`;
+              statusEl.classList.remove('hidden');
+              setTimeout(() => statusEl.classList.add('hidden'), 2000); // Show text message for 2 seconds
+            }
+          });
+        }, 2500); // Total animation display duration before starting fade-out
+      }
+    }
+
+    /**
+     * Reads a File object as an ArrayBuffer.
+     * @param {File} file - The File object to read.
+     * @returns {Promise<ArrayBuffer>} A promise that resolves with the ArrayBuffer.
+     */
+    function readFileAsArrayBuffer(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = e => reject(new Error(e.target.error.message));
+        reader.readAsArrayBuffer(file);
+      });
+    }
+
+    /**
+     * Returns the MIME type for a given file extension.
+     * @param {string} ext - The file extension (e.g., 'jpg', 'pdf').
+     * @returns {string} The corresponding MIME type.
+     */
+    function getMimeType(ext) {
+      const mimeTypes = {
+        jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png',
+        txt: 'text/plain', pdf: 'application/pdf',
+        mp3: 'audio/mpeg', mp4: 'video/mp4',
+        zip: 'application/zip', rar: 'application/x-rar-compressed',
+        doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      };
+      return mimeTypes[ext] || 'application/octet-stream'; // Default to generic binary stream
+    }
+
+    // Event listener for the "Sisipkan File" (Embed File) button
+    document.getElementById('embedButton').onclick = async () => {
+      const mediaFile = document.getElementById('mediaInput').files[0];
+      const secretFile = document.getElementById('fileInput').files[0];
+
+      // Validate if both files are selected
+      if (!mediaFile || !secretFile) {
+        return showMessage('Pilih media dan file yang akan disisipkan!', true);
+      }
+
+      try {
+        // Read media and secret files as ArrayBuffers
+        const mediaBuffer = await readFileAsArrayBuffer(mediaFile);
+        const secretBuffer = await readFileAsArrayBuffer(secretFile);
+
+        // Create a new Uint8Array to combine the media, secret file, and its size
+        // The size of the secret file is stored in the last 4 bytes of the combined buffer
+        const combinedArray = new Uint8Array(mediaBuffer.byteLength + secretBuffer.byteLength + 4);
+
+        // Copy media data
+        combinedArray.set(new Uint8Array(mediaBuffer), 0);
+        // Copy secret file data after media data
+        combinedArray.set(new Uint8Array(secretBuffer), mediaBuffer.byteLength);
+
+        // Get the size of the secret file
+        const secretFileSize = secretBuffer.byteLength;
+        // Store the size in the last 4 bytes (big-endian)
+        combinedArray.set([
+          (secretFileSize >> 24) & 0xFF,
+          (secretFileSize >> 16) & 0xFF,
+          (secretFileSize >> 8) & 0xFF,
+          secretFileSize & 0xFF
+        ], mediaBuffer.byteLength + secretBuffer.byteLength);
+
+        // Create a Blob from the combined data with the original media's MIME type
+        const outputBlob = new Blob([combinedArray], { type: mediaFile.type });
+        const outputUrl = URL.createObjectURL(outputBlob);
+
+        // Hide all previous output elements
+        ['outputVideo', 'outputAudio', 'outputImage', 'outputPDF', 'downloadLink'].forEach(id => document.getElementById(id).classList.add('hidden'));
+
+        // Display the output based on the media type and trigger animation
+        if (mediaFile.type.startsWith('video/')) {
+          const videoElement = document.getElementById('outputVideo');
+          videoElement.src = outputUrl;
+          videoElement.classList.remove('hidden');
+          showMessage('Penyisipan file berhasil!', false, 'outputVideo');
+        } else if (mediaFile.type.startsWith('audio/')) {
+          const audioElement = document.getElementById('outputAudio');
+          audioElement.src = outputUrl;
+          audioElement.classList.remove('hidden');
+          showMessage('Penyisipan file berhasil!', false, 'outputAudio');
+        } else if (mediaFile.type.startsWith('image/')) {
+          const imageElement = document.getElementById('outputImage');
+          imageElement.src = outputUrl;
+          imageElement.classList.remove('hidden');
+          showMessage('Penyisipan file berhasil!', false, 'outputImage');
+        } else if (mediaFile.type === 'application/pdf') {
+          const pdfFrame = document.getElementById('outputPDF');
+          pdfFrame.src = outputUrl;
+          pdfFrame.classList.remove('hidden');
+          showMessage('Penyisipan file berhasil!', false, 'outputPDF');
+        } else {
+          // For other file types, provide a direct download link
+          const downloadLink = document.getElementById('downloadLink');
+          downloadLink.href = outputUrl;
+          // Set a default download filename based on the original media name
+          downloadLink.download = `steganografi_output.${mediaFile.name.split('.').pop() || 'bin'}`;
+          downloadLink.classList.remove('hidden');
+          showMessage('Penyisipan file berhasil!', false, 'downloadLink');
+        }
+      } catch (error) {
+        showMessage(`Error saat menyisipkan file: ${error.message}`, true);
+      }
+    };
+
+    // Event listener for the "Dekripsi File" (Decrypt File) button
+    document.getElementById('decryptButton').onclick = () => {
+      const encryptedMedia = document.getElementById('encryptedMediaInput').files[0];
+      if (!encryptedMedia) {
+        return showMessage('Pilih file media terenkripsi untuk dekripsi!', true);
+      }
+      // Show the file format selection dropdown
+      document.getElementById('fileFormatSelection').classList.remove('hidden');
+      // Hide any previously displayed decrypted content or download link
+      document.getElementById('decryptedVideo').classList.add('hidden');
+      document.getElementById('decryptedImage').classList.add('hidden');
+      document.getElementById('downloadFileLink').classList.add('hidden');
+    };
+
+    // Event listener for the file format selection dropdown during decryption
+    document.getElementById('fileFormat').onchange = async function() {
+      const selectedFormat = this.value;
+      if (!selectedFormat) {
+        // If no format is selected, do nothing
+        return;
+      }
+
+      try {
+        const encryptedMedia = document.getElementById('encryptedMediaInput').files[0];
+        if (!encryptedMedia) {
+          throw new Error('Tidak ada file media terenkripsi yang dipilih.');
+        }
+
+        const buffer = await readFileAsArrayBuffer(encryptedMedia);
+        const uint8Array = new Uint8Array(buffer);
+
+        // Extract the size of the hidden file from the last 4 bytes
+        const hiddenFileSize = (uint8Array[uint8Array.length - 4] << 24) |
+                               (uint8Array[uint8Array.length - 3] << 16) |
+                               (uint8Array[uint8Array.length - 2] << 8) |
+                               uint8Array[uint8Array.length - 1];
+
+        // Validate the extracted size
+        if (hiddenFileSize <= 0 || hiddenFileSize > buffer.byteLength - 4) {
+          throw new Error('Tidak dapat menemukan file tersembunyi atau ukuran file tidak valid.');
+        }
+
+        // Calculate the starting position of the hidden file data
+        const hiddenFileStart = buffer.byteLength - 4 - hiddenFileSize;
+        // Extract the hidden file's ArrayBuffer
+        const hiddenFileBuffer = buffer.slice(hiddenFileStart, buffer.byteLength - 4);
+
+        // Create a Blob from the hidden file data with the selected MIME type
+        const decryptedBlob = new Blob([hiddenFileBuffer], { type: getMimeType(selectedFormat) });
+        const decryptedUrl = URL.createObjectURL(decryptedBlob);
+
+        // Hide all previous decrypted output elements
+        document.getElementById('decryptedVideo').classList.add('hidden');
+        document.getElementById('decryptedImage').classList.add('hidden');
+        document.getElementById('downloadFileLink').classList.add('hidden'); // Ensure download link is hidden initially
+
+        // Display the decrypted content based on the selected format and trigger animation
+        if (selectedFormat === 'mp4') {
+          const videoElement = document.getElementById('decryptedVideo');
+          videoElement.src = decryptedUrl;
+          videoElement.classList.remove('hidden');
+          showMessage('Dekripsi file berhasil!', false, 'decryptedVideo');
+        } else if (['jpg', 'jpeg', 'png'].includes(selectedFormat)) {
+          const imageElement = document.getElementById('decryptedImage');
+          imageElement.src = decryptedUrl;
+          imageElement.classList.remove('hidden');
+          showMessage('Dekripsi file berhasil!', false, 'decryptedImage');
+        } else {
+          // For other decrypted file types, show download link and animation over it
+          const downloadFileLink = document.getElementById('downloadFileLink');
+          downloadFileLink.href = decryptedUrl;
+          downloadFileLink.download = `decrypted_file.${selectedFormat}`; // Suggest a filename
+          downloadFileLink.classList.remove('hidden'); // Show the download link
+          showMessage('Dekripsi file berhasil!', false, 'downloadFileLink');
+        }
+      } catch (error) {
+        showMessage(`Error saat mendekripsi file: ${error.message}`, true);
+        // Hide file format selection and download link on error
+        document.getElementById('fileFormatSelection').classList.add('hidden');
+        document.getElementById('downloadFileLink').classList.add('hidden');
+      }
+    };
+  </script>
+</body>
+</html>

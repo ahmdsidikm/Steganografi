@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menjelajahi Steganografi: Seni Menyembunyikan Pesan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s ease-in-out;
+        }
+        .nav-link:hover {
+            color: #f59e0b; /* amber-500 */
+        }
+        .card-hover {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -33px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #f59e0b; /* amber-500 */
+            border: 4px solid #fdfbf7; /* beige-50 */
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #f59e0b;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-[#fdfbf7] text-gray-800 antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-gray-900">Dasbor Steganografi</h1>
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="#konsep" class="nav-link text-gray-600">Konsep</a>
+                <a href="#teknik" class="nav-link text-gray-600">Teknik</a>
+                <a href="#aplikasi" class="nav-link text-gray-600">Aplikasi</a>
+                <a href="#sejarah" class="nav-link text-gray-600">Sejarah</a>
+                <a href="#deteksi" class="nav-link text-gray-600">Deteksi</a>
+                <div class="relative">
+                    <button id="start-button" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ml-4">Mulai</button>
+                    <div id="start-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 hidden">
+                        <a href="SteganografiFile.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Steganografi Gambar</a>
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Steganografi Audio</a>
+                    </div>
+                </div>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-gray-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#konsep" class="block py-2 nav-link text-gray-600">Konsep</a>
+            <a href="#teknik" class="block py-2 nav-link text-gray-600">Teknik</a>
+            <a href="#aplikasi" class="block py-2 nav-link text-gray-600">Aplikasi</a>
+            <a href="#sejarah" class="block py-2 nav-link text-gray-600">Sejarah</a>
+            <a href="#deteksi" class="block py-2 nav-link text-gray-600">Deteksi</a>
+            <div class="border-t border-gray-200 mt-2 pt-2">
+                <button id="mobile-start-button" class="w-full text-left py-2 px-4 text-gray-700 font-bold">Mulai</button>
+                <div id="mobile-start-dropdown" class="pl-4 hidden">
+                    <a href="Steganografi.html" class="block py-2 text-gray-700 hover:bg-gray-100">Steganografi Gambar</a>
+                    <a href="#" class="block py-2 text-gray-700 hover:bg-gray-100">Steganografi Audio</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <section id="pengantar" class="text-center mb-20">
+            <h2 class="text-4xl font-bold mb-4 text-gray-900">Seni dan Ilmu Menyembunyikan Informasi</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                Selamat datang di dunia steganografi. Berbeda dengan kriptografi yang mengacak pesan, steganografi menyembunyikan fakta bahwa ada komunikasi rahasia. Aplikasi ini akan memandu Anda melalui konsep inti, teknik, aplikasi, dan sejarah dari disiplin ilmu yang menarik ini.
+            </p>
+        </section>
+        
+        <section id="konsep" class="mb-20">
+            <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">Memahami Konsep Inti</h3>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Steganografi dibangun di atas beberapa prinsip dasar yang menentukan efektivitasnya. Bagian ini menguraikan pilar-pilar tersebut dan membandingkannya dengan kriptografi untuk memberikan pemahaman yang jelas tentang tujuan uniknya dalam keamanan informasi.</p>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <h4 class="font-bold text-xl mb-2 text-amber-600">Imperceptibility</h4>
+                    <p class="text-gray-600">Tujuan utama: pesan tersembunyi tidak boleh terdeteksi oleh indra manusia atau analisis statistik. Media pembawa harus tampak normal.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <h4 class="font-bold text-xl mb-2 text-amber-600">Kapasitas & Ketahanan</h4>
+                    <p class="text-gray-600">Kapasitas adalah jumlah data yang bisa disembunyikan. Ketahanan (Robustness) adalah kemampuan data untuk bertahan dari manipulasi seperti kompresi.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <h4 class="font-bold text-xl mb-2 text-amber-600">Kerahasiaan & Kualitas</h4>
+                    <p class="text-gray-600">Kerahasiaan (Secrecy) memastikan keberadaan pesan tidak dapat dideteksi, sementara kualitas (Fidelity) menjaga agar media pembawa tetap mirip dengan aslinya.</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <h4 class="text-2xl font-bold text-center mb-6 text-gray-900">Steganografi vs. Kriptografi</h4>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="border-r-0 md:border-r md:pr-8 border-gray-200">
+                        <h5 class="font-bold text-xl mb-3 text-emerald-600">Steganografi</h5>
+                        <p class="text-gray-600">Menyembunyikan <span class="font-semibold">keberadaan</span> pesan. Outputnya adalah media yang tampak normal dan tidak mencurigakan. Tujuannya adalah keamanan melalui kerahasiaan.</p>
+                        <div class="mt-4 text-center text-5xl">🖼️</div>
+                        <p class="text-center text-gray-500 mt-2">Gambar Normal (menyembunyikan data)</p>
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-xl mb-3 text-sky-600">Kriptografi</h5>
+                        <p class="text-gray-600">Menyembunyikan <span class="font-semibold">isi</span> pesan. Outputnya adalah data acak (ciphertext) yang jelas merupakan pesan terenkripsi. Tujuannya adalah keamanan melalui pengacakan.</p>
+                        <div class="mt-4 text-center font-mono text-lg break-all bg-gray-100 p-4 rounded">xP3vR!bZ#9sK</div>
+                        <p class="text-center text-gray-500 mt-2">Teks Terenkripsi (isi dilindungi)</p>
+                    </div>
+                </div>
+                 <p class="text-center text-sm text-gray-500 mt-8">Keduanya dapat digabungkan: mengenkripsi pesan (kriptografi), lalu menyembunyikannya (steganografi) untuk keamanan berlapis.</p>
+            </div>
+        </section>
+
+        <section id="teknik" class="mb-20">
+            <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">Teknik & Media Penutup</h3>
+             <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Pesan rahasia dapat disembunyikan dalam berbagai jenis file digital. Setiap jenis media menawarkan teknik dan tantangan yang unik. Jelajahi berbagai metode yang digunakan untuk menyembunyikan informasi di depan mata.</p>
+
+            <div class="w-full max-w-4xl mx-auto">
+                <div class="mb-4 flex space-x-2 sm:space-x-4 p-1 bg-gray-200/50 rounded-lg justify-center">
+                    <button data-tab="gambar" class="tab-btn flex-1 py-2 px-4 rounded-md text-sm sm:text-base font-semibold bg-white shadow-md text-amber-600">Gambar</button>
+                    <button data-tab="audio" class="tab-btn flex-1 py-2 px-4 rounded-md text-sm sm:text-base font-semibold text-gray-500">Audio</button>
+                    <button data-tab="teks" class="tab-btn flex-1 py-2 px-4 rounded-md text-sm sm:text-base font-semibold text-gray-500">Teks</button>
+                    <button data-tab="jaringan" class="tab-btn flex-1 py-2 px-4 rounded-md text-sm sm:text-base font-semibold text-gray-500">Jaringan</button>
+                </div>
+
+                <div id="tab-content" class="bg-white p-8 rounded-lg shadow-lg min-h-[250px]">
+                    <div id="gambar-content" class="tab-pane">
+                        <h4 class="font-bold text-xl mb-3">Steganografi Gambar</h4>
+                        <p class="text-gray-600">Paling populer karena redundansi data pada gambar. Teknik umum termasuk <span class="font-semibold">LSB (Least Significant Bit)</span>, di mana data disisipkan ke dalam bit paling tidak signifikan dari piksel gambar. Teknik <span class="font-semibold">Domain Transformasi (DCT, DWT)</span> menyembunyikan data dalam koefisien frekuensi gambar, membuatnya lebih tahan terhadap kompresi.</p>
+                    </div>
+                    <div id="audio-content" class="tab-pane hidden">
+                        <h4 class="font-bold text-xl mb-3">Steganografi Audio</h4>
+                        <p class="text-gray-600">Menyembunyikan pesan dalam file audio. Tekniknya meliputi <span class="font-semibold">LSB Coding</span> pada sampel audio, <span class="font-semibold">Phase Coding</span> yang memanipulasi fase sinyal, dan <span class="font-semibold">Echo Hiding</span> yang menyematkan data sebagai gema yang tidak terdengar oleh telinga manusia.</p>
+                    </div>
+                     <div id="teks-content" class="tab-pane hidden">
+                        <h4 class="font-bold text-xl mb-3">Steganografi Teks</h4>
+                        <p class="text-gray-600">Menantang karena kurangnya redundansi. Metode dapat berupa modifikasi spasi putih, penggunaan sinonim, atau dengan teknik modern menggunakan <span class="font-semibold">Large Language Models (LLM)</span> untuk menghasilkan teks yang secara statistik normal namun mengandung pesan tersembunyi.</p>
+                        <div class="mt-8 pt-6 border-t border-gray-200">
+                            <h5 class="font-bold text-xl mb-4 text-gray-900">✨ Coba Hasilkan Teks Penutup ✨</h5>
+                            <p class="text-gray-600 mb-4">Ingin melihat bagaimana LLM dapat membuat teks yang tampak normal untuk menyembunyikan pesan? Klik tombol di bawah ini untuk menghasilkan contoh teks penutup.</p>
+                            <button id="generate-text-btn" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 flex items-center justify-center">
+                                <span id="button-text">Hasilkan Teks Penutup</span>
+                                <div id="loading-spinner" class="spinner ml-2 hidden"></div>
+                            </button>
+                            <div id="generated-text-output" class="mt-6 bg-gray-100 p-4 rounded-lg text-gray-700 italic hidden">
+                                <p>Teks yang dihasilkan akan muncul di sini.</p>
+                            </div>
+                            <div id="error-message" class="mt-4 text-red-600 hidden">
+                                Terjadi kesalahan saat menghasilkan teks. Silakan coba lagi.
+                            </div>
+                        </div>
+                    </div>
+                    <div id="jaringan-content" class="tab-pane hidden">
+                        <h4 class="font-bold text-xl mb-3">Steganografi Jaringan</h4>
+                        <p class="text-gray-600">Menyembunyikan data dalam protokol jaringan seperti TCP/IP. Ini dilakukan dengan memanipulasi bidang-bidang yang jarang digunakan atau redundan di *header* paket, seperti bidang 'Flags' atau 'Identification' di IPv4, untuk menciptakan saluran komunikasi rahasia (*covert channel*).</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-16">
+                <h4 class="text-2xl font-bold text-center mb-6 text-gray-900">Visualisasi Perbandingan Teknik Gambar</h4>
+                <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Tidak semua teknik diciptakan sama. Bagan radar interaktif ini membandingkan metode steganografi gambar yang populer berdasarkan tiga metrik kunci: kapasitas (seberapa banyak data dapat disembunyikan), ketahanan (kemampuan bertahan dari modifikasi), dan ketidakterdeteksian (seberapa sulit untuk ditemukan).</p>
+                <div class="bg-white p-4 sm:p-8 rounded-lg shadow-lg">
+                    <div class="chart-container">
+                        <canvas id="steganographyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="aplikasi" class="mb-20">
+            <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">Aplikasi di Dunia Nyata: Pedang Bermata Dua</h3>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Seperti banyak teknologi lainnya, steganografi dapat digunakan untuk tujuan baik dan buruk. Bagian ini mengeksplorasi spektrum aplikasinya, dari melindungi hak kekayaan intelektual hingga memfasilitasi aktivitas ilegal, menyoroti implikasi etis dan keamanannya.</p>
+
+            <div class="grid md:grid-cols-2 gap-12">
+                <div>
+                    <h4 class="text-2xl font-bold mb-6 text-emerald-600 text-center">✅ Aplikasi Legal & Bermanfaat</h4>
+                    <ul class="space-y-4">
+                        <li class="bg-white p-4 rounded-lg shadow-md card-hover"><strong>Digital Watermarking:</strong> Menyematkan informasi hak cipta yang tak terlihat untuk melindungi kekayaan intelektual pada gambar, audio, dan video.</li>
+                        <li class="bg-white p-4 rounded-lg shadow-md card-hover"><strong>Komunikasi Rahasia:</strong> Memungkinkan jurnalis, aktivis, atau warga di negara-negara represif untuk berkomunikasi dengan aman tanpa menimbulkan kecurigaan.</li>
+                        <li class="bg-white p-4 rounded-lg shadow-md card-hover"><strong>Pelacakan Asal Data:</strong> Menanamkan jejak digital untuk memverifikasi keaslian dokumen atau melacak sumber kebocoran data.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-2xl font-bold mb-6 text-red-600 text-center">❌ Aplikasi Ilegal & Berbahaya</h4>
+                    <ul class="space-y-4">
+                        <li class="bg-white p-4 rounded-lg shadow-md card-hover"><strong>Komunikasi Kriminal:</strong> Digunakan oleh teroris dan organisasi kriminal untuk merencanakan kegiatan secara rahasia dan menghindari deteksi oleh penegak hukum.</li>
+                        <li class="bg-white p-4 rounded-lg shadow-md card-hover"><strong>Penyebaran Malware:</strong> Menyembunyikan kode berbahaya (*malware*) di dalam file gambar atau dokumen biasa untuk melewati perangkat lunak antivirus.</li>
+                        <li class="bg-white p-4 rounded-lg shadow-md card-hover"><strong>Eksfiltrasi Data:</strong> Mencuri dan mengeluarkan data rahasia dari jaringan aman tanpa memicu sistem deteksi intrusi.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <section id="sejarah" class="mb-20">
+            <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">Jejak Sejarah Steganografi</h3>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Kebutuhan akan komunikasi rahasia bukanlah hal baru. Steganografi telah digunakan selama ribuan tahun, berevolusi dari metode fisik yang cerdik menjadi teknik digital yang canggih. Timeline ini menyoroti beberapa tonggak penting dalam perjalanannya.</p>
+
+            <div class="relative max-w-2xl mx-auto border-l-4 border-gray-200 pl-8">
+                <div class="mb-12 relative timeline-item">
+                    <h4 class="font-bold text-xl text-amber-600">440 SM - Papan Lilin</h4>
+                    <p class="text-gray-600">Herodotus mencatat kisah Demaratus yang mengirim peringatan invasi Persia ke Sparta dengan menulis pesan di papan kayu dan menutupinya dengan lilin agar tampak kosong.</p>
+                </div>
+                <div class="mb-12 relative timeline-item">
+                    <h4 class="font-bold text-xl text-amber-600">Zaman Kuno - Pesan di Kepala</h4>
+                    <p class="text-gray-600">Metode ekstrem lainnya adalah menato pesan di kulit kepala budak yang dicukur, lalu menunggu rambutnya tumbuh kembali untuk menyembunyikan pesan selama perjalanan.</p>
+                </div>
+                <div class="mb-12 relative timeline-item">
+                    <h4 class="font-bold text-xl text-amber-600">1499 - Istilah Diciptakan</h4>
+                    <p class="text-gray-600">Johannes Trithemius menulis buku "Steganographia", sebuah risalah tentang kriptografi dan steganografi yang disamarkan sebagai buku sihir.</p>
+                </div>
+                 <div class="mb-12 relative timeline-item">
+                    <h4 class="font-bold text-xl text-amber-600">1985 - Era Digital Dimulai</h4>
+                    <p class="text-gray-600">Komputer pribadi mulai digunakan untuk steganografi, membuka jalan untuk menyembunyikan data dalam file digital seperti gambar dan audio.</p>
+                </div>
+                <div class="relative timeline-item">
+                    <h4 class="font-bold text-xl text-amber-600">2010-an - Revolusi AI</h4>
+                    <p class="text-gray-600">Kecerdasan Buatan dan *Deep Learning* merevolusi bidang ini, menciptakan metode penyembunyian yang sangat canggih dan sulit dideteksi menggunakan model seperti GANs dan LLM.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="deteksi" class="bg-white p-8 rounded-lg shadow-lg">
+             <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">Tantangan Deteksi: Steganalisis</h3>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Untuk setiap metode penyembunyian, ada metode pendeteksian. Steganalisis adalah seni dan ilmu untuk menemukan pesan tersembunyi. Ini adalah "perlombaan senjata" digital yang terus-menerus antara mereka yang menyembunyikan dan mereka yang mencari.</p>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h4 class="font-bold text-xl mb-3 text-sky-600">Bagaimana Cara Kerjanya?</h4>
+                    <p class="text-gray-600">Steganalisis mencari anomali. Bahkan perubahan sekecil apa pun dari penyisipan data dapat meninggalkan jejak statistik. Metode modern menggunakan <span class="font-semibold">analisis statistik</span> untuk menemukan penyimpangan dalam data dan melatih model <span class="font-semibold">Machine Learning</span> untuk mengenali pola-pola yang ditinggalkan oleh alat steganografi, membedakan antara media asli dan yang dimodifikasi.</p>
+                </div>
+                 <div class="text-center">
+                    <div class="text-6xl">🔍</div>
+                    <p class="text-gray-500 mt-2">Mencari jejak digital yang tak terlihat.</p>
+                </div>
+            </div>
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <h5 class="font-bold text-xl mb-4 text-gray-900">✨ Analisis Potensi Steganografi Teks ✨</h5>
+                <p class="text-gray-600 mb-4">Masukkan sepotong teks di bawah ini dan biarkan AI memberikan analisis konseptual tentang apakah teks tersebut tampak normal atau memiliki karakteristik yang *mungkin* menarik bagi steganografi.</p>
+                <textarea id="text-analysis-input" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 mb-4" rows="5" placeholder="Masukkan teks di sini untuk dianalisis..."></textarea>
+                <button id="analyze-text-btn" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 flex items-center justify-center">
+                    <span id="analyze-button-text">Analisis Teks</span>
+                    <div id="analyze-loading-spinner" class="spinner ml-2 hidden"></div>
+                </button>
+                <div id="analysis-output" class="mt-6 bg-gray-100 p-4 rounded-lg text-gray-700 italic hidden">
+                    <p>Hasil analisis akan muncul di sini.</p>
+                </div>
+                <div id="analysis-error-message" class="mt-4 text-red-600 hidden">
+                    Terjadi kesalahan saat menganalisis teks. Silakan coba lagi.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-20">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p>&copy; 2025 Dasbor Interaktif Steganografi. Dibuat untuk tujuan edukasi.</p>
+        </div>
+    </footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const chartData = {
+            labels: [
+                'Imperceptibility (Ketidakterdeteksian)',
+                'Kapasitas',
+                'Robustness (Ketahanan)',
+                'Kompleksitas'
+            ],
+            datasets: [{
+                label: 'LSB Insertion',
+                data: [2, 3, 1, 1],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgb(255, 99, 132)',
+                pointBackgroundColor: 'rgb(255, 99, 132)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(255, 99, 132)'
+            }, {
+                label: 'Domain Transformasi',
+                data: [2.5, 2, 2.5, 2],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgb(54, 162, 235)',
+                pointBackgroundColor: 'rgb(54, 162, 235)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(54, 162, 235)'
+            },
+            {
+                label: 'Berbasis AI (GANs)',
+                data: [3, 3, 3, 3],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgb(75, 192, 192)',
+                pointBackgroundColor: 'rgb(75, 192, 192)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(75, 192, 192)'
+            }]
+        };
+
+        const config = {
+            type: 'radar',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: true
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 3.5,
+                        pointLabels: {
+                            font: {
+                                size: 12
+                            }
+                        },
+                        ticks: {
+                           display: false,
+                           stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                const value = context.raw;
+                                const interpretations = ['Rendah', 'Sedang', 'Baik', 'Sangat Baik'];
+                                label += interpretations[value-1] || value;
+                                return label;
+                            }
+                        }
+                    }
+                }
+            },
+        };
+
+        const ctx = document.getElementById('steganographyChart').getContext('2d');
+        new Chart(ctx, config);
+
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.dataset.tab;
+
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('bg-white', 'shadow-md', 'text-amber-600');
+                    btn.classList.add('text-gray-500');
+                });
+                button.classList.add('bg-white', 'shadow-md', 'text-amber-600');
+                button.classList.remove('text-gray-500');
+
+                tabPanes.forEach(pane => {
+                    if (pane.id === `${tabId}-content`) {
+                        pane.classList.remove('hidden');
+                    } else {
+                        pane.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Start button dropdown logic
+        const startButton = document.getElementById('start-button');
+        const startDropdown = document.getElementById('start-dropdown');
+        const mobileStartButton = document.getElementById('mobile-start-button');
+        const mobileStartDropdown = document.getElementById('mobile-start-dropdown');
+
+        startButton.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent click from immediately closing the dropdown
+            startDropdown.classList.toggle('hidden');
+        });
+
+        mobileStartButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            mobileStartDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown if clicked outside
+        document.addEventListener('click', (event) => {
+            if (!startButton.contains(event.target) && !startDropdown.contains(event.target)) {
+                startDropdown.classList.add('hidden');
+            }
+            if (!mobileStartButton.contains(event.target) && !mobileStartDropdown.contains(event.target)) {
+                mobileStartDropdown.classList.add('hidden');
+            }
+        });
+
+
+        // Gemini API integration for text generation
+        const generateTextBtn = document.getElementById('generate-text-btn');
+        const generatedTextOutput = document.getElementById('generated-text-output');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const buttonText = document.getElementById('button-text');
+        const errorMessage = document.getElementById('error-message');
+
+        generateTextBtn.addEventListener('click', async () => {
+            generatedTextOutput.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
+            buttonText.textContent = 'Menghasilkan...';
+            generateTextBtn.disabled = true;
+
+            try {
+                let chatHistory = [];
+                const prompt = "Hasilkan satu paragraf singkat, sekitar 50-70 kata, yang terdengar seperti deskripsi cuaca sehari-hari atau pengamatan sederhana tentang alam, tanpa ada indikasi pesan tersembunyi. Misalnya, tentang hari yang cerah atau awan yang bergerak. Pastikan teksnya sangat netral dan umum.";
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // If you want to use models other than gemini-2.0-flash or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    generatedTextOutput.textContent = text;
+                    generatedTextOutput.classList.remove('hidden');
+                } else {
+                    errorMessage.classList.remove('hidden');
+                    console.error('Unexpected API response structure:', result);
+                }
+            } catch (error) {
+                errorMessage.classList.remove('hidden');
+                console.error('Error calling Gemini API:', error);
+            } finally {
+                loadingSpinner.classList.add('hidden');
+                buttonText.textContent = 'Hasilkan Teks Penutup';
+                generateTextBtn.disabled = false;
+            }
+        });
+
+        // Gemini API integration for text analysis
+        const textAnalysisInput = document.getElementById('text-analysis-input');
+        const analyzeTextBtn = document.getElementById('analyze-text-btn');
+        const analysisOutput = document.getElementById('analysis-output');
+        const analyzeLoadingSpinner = document.getElementById('analyze-loading-spinner');
+        const analyzeButtonText = document.getElementById('analyze-button-text');
+        const analysisErrorMessage = document.getElementById('analysis-error-message');
+
+        analyzeTextBtn.addEventListener('click', async () => {
+            const inputText = textAnalysisInput.value.trim();
+            if (!inputText) {
+                analysisOutput.textContent = 'Silakan masukkan teks untuk dianalisis.';
+                analysisOutput.classList.remove('hidden');
+                return;
+            }
+
+            analysisOutput.classList.add('hidden');
+            analysisErrorMessage.classList.add('hidden');
+            analyzeLoadingSpinner.classList.remove('hidden');
+            analyzeButtonText.textContent = 'Menganalisis...';
+            analyzeTextBtn.disabled = true;
+
+            try {
+                let chatHistory = [];
+                const prompt = `Sebagai seorang ahli steganografi, periksa teks berikut untuk melihat apakah ada pola atau anomali yang *mungkin* mengindikasikan adanya pesan tersembunyi, atau apakah teks tersebut terdengar sepenuhnya normal dan tidak mencurigakan. Berikan analisis singkat (sekitar 50-70 kata) dan umum, fokus pada karakteristik linguistik atau struktur yang bisa menjadi 'media penutup' yang baik atau 'mencurigakan'. Jangan mencoba mendeteksi pesan yang sebenarnya, hanya menilai potensi steganografi. Teks: ${inputText}`;
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    analysisOutput.textContent = text;
+                    analysisOutput.classList.remove('hidden');
+                } else {
+                    analysisErrorMessage.classList.remove('hidden');
+                    console.error('Unexpected API response structure:', result);
+                }
+            } catch (error) {
+                analysisErrorMessage.classList.remove('hidden');
+                console.error('Error calling Gemini API:', error);
+            } finally {
+                analyzeLoadingSpinner.classList.add('hidden');
+                analyzeButtonText.textContent = 'Analisis Teks';
+                analyzeTextBtn.disabled = false;
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
