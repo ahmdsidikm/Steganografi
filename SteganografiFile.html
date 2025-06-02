@@ -13,7 +13,8 @@
     /* Gaya dasar untuk body untuk memastikan tinggi penuh dan font */
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #fdfaf6; /* Latar belakang krem muda */
+      background-color: #1a202c; /* Latar belakang gelap */
+      color: #e2e8f0; /* Warna teks terang */
       overflow-x: hidden; /* Sembunyikan overflow horizontal */
     }
     /* Gaya untuk indikator memuat */
@@ -55,7 +56,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: #fdfaf6;
+      background-color: #1a202c; /* Latar belakang gelap */
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -80,7 +81,7 @@
 
     .splash-text {
       font-size: 1.5rem;
-      color: #4b5563; /* Warna abu-abu gelap */
+      color: #a0aec0; /* Warna abu-abu terang */
       animation: fadeIn 1.5s ease-out 0.5s forwards;
       opacity: 0;
     }
@@ -124,18 +125,54 @@
       font-weight: 600;
       transition: all 0.3s ease;
       cursor: pointer;
-      color: #4b5563; /* Warna teks default */
-      background-color: #e5e7eb; /* Latar belakang default */
+      color: #e2e8f0; /* Warna teks default */
+      background-color: #4a5568; /* Latar belakang default */
     }
 
     .tab-button.active {
       color: #ffffff; /* Warna teks aktif */
       background-color: #f97316; /* Latar belakang aktif (oranye) */
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
 
     .tab-button:hover:not(.active) {
-      background-color: #d1d5db; /* Latar belakang hover */
+      background-color: #6a7587; /* Latar belakang hover */
+    }
+
+    /* Gaya untuk input file kustom */
+    .custom-file-input-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 1rem;
+      border: 1px solid #4a5568; /* border-gray-600 */
+      border-radius: 0.375rem; /* rounded-md */
+      background-color: #2d3748; /* bg-gray-800 */
+      color: #e2e8f0; /* text-gray-200 */
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+    }
+
+    .custom-file-input-wrapper:hover {
+      background-color: #4a5568; /* hover:bg-gray-700 */
+    }
+
+    .custom-file-input-wrapper:focus-within {
+      border-color: #f97316; /* focus:border-orange-500 */
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.5); /* focus:ring-orange-500 */
+    }
+
+    .custom-file-input-text {
+      flex-grow: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      margin-right: 0.5rem;
+    }
+
+    .custom-file-input-icon {
+      color: #a0aec0; /* text-gray-400 */
     }
   </style>
 </head>
@@ -145,17 +182,17 @@
     <div class="splash-text">Sembunyikan dan Dekripsi File</div>
   </div>
 
-  <nav class="bg-white shadow-sm">
+  <nav class="bg-gray-800 shadow-sm">
     <div class="container mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center">
-      <h1 class="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Steganografi Multi-Media</h1>
+      <h1 class="text-2xl font-bold text-white mb-4 sm:mb-0">Steganografi Multi-Media</h1>
     </div>
   </nav>
 
   <main class="flex-grow">
     <div class="container mx-auto p-6 max-w-7xl">
       <div class="text-center mb-8">
-        <h2 class="text-4xl font-bold text-gray-800 mb-4">Sembunyikan & Dekripsi File dalam Media</h2>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">Gunakan aplikasi ini untuk menyembunyikan file rahasia di dalam gambar, video, audio, atau teks, serta mendekripsi file yang sudah tersembunyi.</p>
+        <h2 class="text-4xl font-bold text-white mb-4">Sembunyikan & Dekripsi File dalam Media</h2>
+        <p class="text-lg text-gray-400 max-w-2xl mx-auto">Gunakan aplikasi ini untuk menyembunyikan file rahasia di dalam gambar, video, audio, atau teks, serta mendekripsi file yang sudah tersembunyi.</p>
         <div class="flex justify-center space-x-4 mt-8">
           <button id="showEmbedTab" class="tab-button active">
             <i class="fas fa-eye-slash mr-2"></i> Sembunyikan File
@@ -167,23 +204,29 @@
       </div>
     </div>
 
-    <div id="embedSection" class="bg-white p-8 rounded-lg shadow-lg border-t-4 border-orange-500 transition-opacity duration-500 opacity-100 mb-8 mx-4 md:mx-auto max-w-7xl">
+    <div id="embedSection" class="bg-gray-700 p-8 rounded-lg shadow-lg border-t-4 border-orange-500 transition-opacity duration-500 opacity-100 mb-8 mx-4 md:mx-auto max-w-7xl">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
           <h3 class="text-2xl font-bold text-orange-500 mb-6 text-center">Sembunyikan File</h3>
           <div class="space-y-6">
             <div>
-              <label for="mediaInput" class="block text-base font-medium text-gray-700 mb-2">Unggah File Cover (Gambar, Video, Audio, Teks):</label>
-              <input type="file" id="mediaInput" accept="*/*"
-                class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500 bg-white text-gray-700 shadow-sm">
+              <label for="mediaInput" class="block text-base font-medium text-gray-200 mb-2">Unggah File Cover (Gambar, Video, Audio, Teks):</label>
+              <label for="mediaInput" class="custom-file-input-wrapper">
+                <span id="mediaFileName" class="custom-file-input-text">Tidak ada file terpilih</span>
+                <i class="fas fa-upload custom-file-input-icon"></i>
+              </label>
+              <input type="file" id="mediaInput" accept="*/*" class="hidden">
             </div>
             <div>
-              <label for="fileInput" class="block text-base font-medium text-gray-700 mb-2">Pilih File yang akan Disembunyikan:</label>
-              <input type="file" id="fileInput" accept="*/*"
-                class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500 bg-white text-gray-700 shadow-sm">
+              <label for="fileInput" class="block text-base font-medium text-gray-200 mb-2">Pilih File yang akan Disembunyikan:</label>
+              <label for="fileInput" class="custom-file-input-wrapper">
+                <span id="secretFileName" class="custom-file-input-text">Tidak ada file terpilih</span>
+                <i class="fas fa-upload custom-file-input-icon"></i>
+              </label>
+              <input type="file" id="fileInput" accept="*/*" class="hidden">
             </div>
             <button id="embedButton"
-              class="w-full flex items-center justify-center bg-green-500 text-white py-3 px-4 rounded-md hover:bg-green-600 transition-all font-semibold shadow-md">
+              class="w-full flex items-center justify-center bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition-all font-semibold shadow-md">
               <span id="embedButtonText">Sembunyikan File</span>
               <div id="embedSpinner" class="loading-spinner ml-2 hidden"></div>
             </button>
@@ -191,19 +234,19 @@
         </div>
         <div class="space-y-4 mt-6 md:mt-0 relative">
           <div class="text-center">
-            <h4 class="text-lg font-semibold text-gray-700 mb-2">Pratinjau File Cover:</h4>
-            <img id="outputImageOriginal" class="hidden w-full h-48 object-contain border border-gray-300 rounded-md shadow-sm bg-gray-100 flex items-center justify-center text-gray-500" alt="File cover Asli" src="https://placehold.co/200x150/e0e0e0/555555?text=File+cover">
-            <video id="outputVideoOriginal" controls class="hidden w-full h-48 object-contain border border-gray-300 rounded-md shadow-sm bg-gray-100"></video>
-            <audio id="outputAudioOriginal" controls class="hidden w-full border border-gray-300 rounded-md shadow-sm bg-gray-100"></audio>
-            <p id="outputTextOriginal" class="hidden w-full h-48 overflow-auto text-sm text-gray-700 border border-gray-300 rounded-md shadow-sm bg-gray-100 p-2"></p>
+            <h4 class="text-lg font-semibold text-gray-200 mb-2">Pratinjau File Cover:</h4>
+            <img id="outputImageOriginal" class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800 flex items-center justify-center text-gray-400" alt="File cover Asli" src="https://placehold.co/200x150/374151/9CA3AF?text=File+cover">
+            <video id="outputVideoOriginal" controls class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800"></video>
+            <audio id="outputAudioOriginal" controls class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800"></audio>
+            <p id="outputTextOriginal" class="hidden w-full h-48 overflow-auto text-sm text-gray-200 border border-gray-600 rounded-md shadow-sm bg-gray-800 p-2"></p>
           </div>
           <div class="text-center">
-            <h4 class="text-lg font-semibold text-gray-700 mb-2">Pratinjau File Stego:</h4>
-            <img id="outputImageStego" class="hidden w-full h-48 object-contain border border-gray-300 rounded-md shadow-sm bg-gray-100 flex items-center justify-center text-gray-500" alt="File Stego" src="https://placehold.co/200x150/e0e0e0/555555?text=File+Stego">
-            <video id="outputVideoStego" controls class="hidden w-full h-48 object-contain border border-gray-300 rounded-md shadow-sm bg-gray-100"></video>
-            <audio id="outputAudioStego" controls class="hidden w-full border border-gray-300 rounded-md shadow-sm bg-gray-100"></audio>
-            <p id="outputTextStego" class="hidden w-full h-48 overflow-auto text-sm text-gray-700 border border-gray-300 rounded-md shadow-sm bg-gray-100 p-2"></p>
-            <a id="downloadLink" class="hidden block text-center bg-green-600 text-white py-2 px-3 mt-4 rounded-md hover:bg-green-700 transition-all font-semibold shadow-md text-sm">
+            <h4 class="text-lg font-semibold text-gray-200 mb-2">Pratinjau File Stego:</h4>
+            <img id="outputImageStego" class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800 flex items-center justify-center text-gray-400" alt="File Stego" src="https://placehold.co/200x150/374151/9CA3AF?text=File+Stego">
+            <video id="outputVideoStego" controls class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800"></video>
+            <audio id="outputAudioStego" controls class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800"></audio>
+            <p id="outputTextStego" class="hidden w-full h-48 overflow-auto text-sm text-gray-200 border border-gray-600 rounded-md shadow-sm bg-gray-800 p-2"></p>
+            <a id="downloadLink" class="hidden block text-center bg-green-700 text-white py-2 px-3 mt-4 rounded-md hover:bg-green-800 transition-all font-semibold shadow-md text-sm">
               <i class="fas fa-download mr-2"></i> Unduh File Stego
             </a>
           </div>
@@ -211,18 +254,21 @@
       </div>
     </div>
 
-    <div id="decryptSection" class="bg-white p-8 rounded-lg shadow-lg border-t-4 border-purple-500 transition-opacity duration-500 opacity-0 hidden mb-8 mx-4 md:mx-auto max-w-7xl">
+    <div id="decryptSection" class="bg-gray-700 p-8 rounded-lg shadow-lg border-t-4 border-purple-500 transition-opacity duration-500 opacity-0 hidden mb-8 mx-4 md:mx-auto max-w-7xl">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
           <h3 class="text-2xl font-bold text-purple-500 mb-6 text-center">Dekripsi File</h3>
           <div class="space-y-6">
             <div>
-              <label for="encryptedMediaInput" class="block text-base font-medium text-gray-700 mb-2">Unggah File Stego (Gambar, Video, Audio, Teks):</label>
-              <input type="file" id="encryptedMediaInput" accept="*/*"
-                class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500 bg-white text-gray-700 shadow-sm">
+              <label for="encryptedMediaInput" class="block text-base font-medium text-gray-200 mb-2">Unggah File Stego (Gambar, Video, Audio, Teks):</label>
+              <label for="encryptedMediaInput" class="custom-file-input-wrapper">
+                <span id="encryptedMediaFileName" class="custom-file-input-text">Tidak ada file terpilih</span>
+                <i class="fas fa-upload custom-file-input-icon"></i>
+              </label>
+              <input type="file" id="encryptedMediaInput" accept="*/*" class="hidden">
             </div>
             <button id="decryptButton"
-              class="w-full flex items-center justify-center bg-purple-600 text-white py-3 px-4 rounded-md hover:bg-purple-700 transition-all font-semibold shadow-md">
+              class="w-full flex items-center justify-center bg-purple-700 text-white py-3 px-4 rounded-md hover:bg-purple-800 transition-all font-semibold shadow-md">
               <span id="decryptButtonText">Dekripsi File</span>
               <div id="decryptSpinner" class="loading-spinner ml-2 hidden"></div>
             </button>
@@ -230,9 +276,9 @@
         </div>
         <div class="space-y-4 mt-6 md:mt-0 relative">
           <div id="fileFormatSelection" class="hidden space-y-2 mt-4">
-            <label for="fileFormat" class="block text-base font-medium text-gray-700">Format Hasil Dekripsi:</label>
+            <label for="fileFormat" class="block text-base font-medium text-gray-200">Format Hasil Dekripsi:</label>
             <select id="fileFormat"
-              class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500 bg-white text-gray-700 shadow-sm">
+              class="block w-full px-4 py-2 border border-gray-600 rounded-md focus:ring-purple-500 focus:border-purple-500 bg-gray-800 text-gray-200 shadow-sm">
               <option value="">Pilih...</option>
               <option value="txt">TXT</option>
               <option value="jpg">JPG</option>
@@ -250,12 +296,12 @@
               <option value="bin">BIN</option>
             </select>
           </div>
-          <h4 class="text-lg font-semibold text-gray-700 mb-2">File Terdekripsi:</h4>
-          <video id="decryptedVideo" controls class="hidden w-full border border-gray-300 rounded-md shadow-sm"></video>
-          <img id="decryptedImage" class="hidden w-full border border-gray-300 rounded-md shadow-sm" alt="Decrypted">
-          <audio id="decryptedAudio" controls class="hidden w-full border border-gray-300 rounded-md shadow-sm"></audio>
-          <p id="decryptedText" class="hidden w-full h-48 overflow-auto text-sm text-gray-700 border border-gray-300 rounded-md shadow-sm bg-gray-100 p-2"></p>
-          <a id="downloadFileLink" class="hidden block text-center bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition-all font-semibold shadow-md">
+          <h4 class="text-lg font-semibold text-gray-200 mb-2">File Terdekripsi:</h4>
+          <video id="decryptedVideo" controls class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800"></video>
+          <img id="decryptedImage" class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800" alt="Decrypted">
+          <audio id="decryptedAudio" controls class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800"></audio>
+          <p id="decryptedText" class="hidden w-full h-48 overflow-auto text-sm text-gray-200 border border-gray-600 rounded-md shadow-sm bg-gray-800 p-2"></p>
+          <a id="downloadFileLink" class="hidden block text-center bg-green-700 text-white py-3 px-4 rounded-md hover:bg-green-800 transition-all font-semibold shadow-md">
             <i class="fas fa-download mr-2"></i> Unduh File Terdekripsi
           </a>
         </div>
@@ -264,8 +310,8 @@
     <div id="statusMessage" class="hidden text-center text-base font-medium mt-8 py-2 px-4 rounded-md"></div>
   </main>
 
-  <footer class="bg-white shadow-inner mt-8">
-    <div class="container mx-auto px-6 py-4 text-center text-gray-600 text-sm">
+  <footer class="bg-gray-800 shadow-inner mt-8">
+    <div class="container mx-auto px-6 py-4 text-center text-gray-400 text-sm">
       &copy; 2025 - Steganografi, Inc.
     </div>
   </footer>
@@ -285,13 +331,13 @@
       if (isError) {
         // Untuk error, tampilkan pesan teks
         statusEl.textContent = msg;
-        statusEl.className = `text-center text-base font-medium transition-all py-2 px-4 rounded-md bg-red-100 text-red-700`;
+        statusEl.className = `text-center text-base font-medium transition-all py-2 px-4 rounded-md bg-red-800 text-red-200`;
         statusEl.classList.remove('hidden');
         setTimeout(() => statusEl.classList.add('hidden'), 5000); // Sembunyikan setelah 5 detik
       } else {
         // Untuk sukses, tampilkan pesan teks
         statusEl.textContent = msg;
-        statusEl.className = `text-center text-base font-medium transition-all py-2 px-4 rounded-md bg-green-100 text-green-700`;
+        statusEl.className = `text-center text-base font-medium transition-all py-2 px-4 rounded-md bg-green-800 text-green-200`;
         statusEl.classList.remove('hidden');
         setTimeout(() => statusEl.classList.add('hidden'), 5000); // Sembunyikan setelah 5 detik
       }
@@ -449,6 +495,49 @@
       }
     }
 
+    /**
+     * Menampilkan pratinjau file media asli.
+     * @param {File} mediaFile - Objek File media yang akan dipratinjau.
+     */
+    async function displayOriginalMediaPreview(mediaFile) {
+      // Sembunyikan semua elemen pratinjau output sebelumnya
+      hideAllOutputPreviews();
+
+      if (!mediaFile) {
+        return; // Tidak ada file, tidak ada pratinjau
+      }
+
+      const originalFileType = mediaFile.type.split('/')[0]; // 'image', 'video', 'audio', 'text'
+      const originalFileExtension = mediaFile.name.split('.').pop().toLowerCase();
+
+      if (originalFileType === 'image') {
+        const readerOriginal = new FileReader();
+        readerOriginal.onload = (e) => {
+          const outputImageOriginal = document.getElementById('outputImageOriginal');
+          outputImageOriginal.src = e.target.result;
+          outputImageOriginal.classList.remove('hidden');
+          setTimeout(() => outputImageOriginal.classList.add('image-fade-in'), 10);
+        };
+        readerOriginal.readAsDataURL(mediaFile);
+      } else if (originalFileType === 'video') {
+        const outputVideoOriginal = document.getElementById('outputVideoOriginal');
+        outputVideoOriginal.src = URL.createObjectURL(mediaFile);
+        outputVideoOriginal.classList.remove('hidden');
+      } else if (originalFileType === 'audio') {
+        const outputAudioOriginal = document.getElementById('outputAudioOriginal');
+        outputAudioOriginal.src = URL.createObjectURL(mediaFile);
+        outputAudioOriginal.classList.remove('hidden');
+      } else if (originalFileExtension === 'txt') {
+        const outputTextOriginal = document.getElementById('outputTextOriginal');
+        outputTextOriginal.textContent = await readFileAsText(mediaFile);
+        outputTextOriginal.classList.remove('hidden');
+      } else {
+        // Untuk tipe file lain, mungkin tidak ada pratinjau langsung
+        // showMessage('Tidak ada pratinjau untuk jenis file cover ini.', false);
+      }
+    }
+
+
     // Event listener untuk tombol "Sembunyikan File"
     document.getElementById('embedButton').onclick = async () => {
       const mediaFile = document.getElementById('mediaInput').files[0];
@@ -468,40 +557,12 @@
       embedSpinner.classList.remove('hidden');
       showMessage('Menyisipkan file...', false);
 
-      // Sembunyikan semua elemen pratinjau output sebelumnya
-      hideAllOutputPreviews();
+      // Sembunyikan semua elemen pratinjau output sebelumnya (kecuali pratinjau original yang sudah ditampilkan)
       document.getElementById('downloadLink').classList.add('hidden');
 
       try {
-        // Tampilkan pratinjau file cover asli
-        const originalFileType = mediaFile.type.split('/')[0]; // 'image', 'video', 'audio', 'text'
-        const originalFileExtension = mediaFile.name.split('.').pop().toLowerCase();
-
-        if (originalFileType === 'image') {
-          const readerOriginal = new FileReader();
-          readerOriginal.onload = (e) => {
-            const outputImageOriginal = document.getElementById('outputImageOriginal');
-            outputImageOriginal.src = e.target.result;
-            outputImageOriginal.classList.remove('hidden');
-            setTimeout(() => outputImageOriginal.classList.add('image-fade-in'), 10);
-          };
-          readerOriginal.readAsDataURL(mediaFile);
-        } else if (originalFileType === 'video') {
-          const outputVideoOriginal = document.getElementById('outputVideoOriginal');
-          outputVideoOriginal.src = URL.createObjectURL(mediaFile);
-          outputVideoOriginal.classList.remove('hidden');
-        } else if (originalFileType === 'audio') {
-          const outputAudioOriginal = document.getElementById('outputAudioOriginal');
-          outputAudioOriginal.src = URL.createObjectURL(mediaFile);
-          outputAudioOriginal.classList.remove('hidden');
-        } else if (originalFileExtension === 'txt') {
-          const outputTextOriginal = document.getElementById('outputTextOriginal');
-          outputTextOriginal.textContent = await readFileAsText(mediaFile);
-          outputTextOriginal.classList.remove('hidden');
-        } else {
-          // Untuk tipe file lain, mungkin tidak ada pratinjau langsung
-          // showMessage('Tidak ada pratinjau untuk jenis file cover ini.', false);
-        }
+        // Tampilkan pratinjau file cover asli (jika belum ditampilkan oleh event listener 'change')
+        // await displayOriginalMediaPreview(mediaFile); // Ini sudah ditangani oleh event listener 'change'
 
         // Baca file media dan rahasia sebagai ArrayBuffers
         const mediaBuffer = await readFileAsArrayBuffer(mediaFile);
@@ -558,7 +619,6 @@
             };
             textReader.readAsText(textBlob);
           } catch (e) {
-            // Fallback jika tidak bisa dibaca sebagai teks
             console.error("Could not read stego text as plain text:", e);
           }
         }
@@ -731,8 +791,20 @@
 
       // Tampilkan tab sembunyikan file secara default saat aplikasi dimuat
       showTab('embed');
+
+      // Tambahkan event listener untuk memperbarui nama file yang dipilih
+      document.getElementById('mediaInput').addEventListener('change', function() {
+        document.getElementById('mediaFileName').textContent = this.files[0] ? this.files[0].name : 'Tidak ada file terpilih';
+        // Panggil fungsi pratinjau langsung di sini
+        displayOriginalMediaPreview(this.files[0]);
+      });
+      document.getElementById('fileInput').addEventListener('change', function() {
+        document.getElementById('secretFileName').textContent = this.files[0] ? this.files[0].name : 'Tidak ada file terpilih';
+      });
+      document.getElementById('encryptedMediaInput').addEventListener('change', function() {
+        document.getElementById('encryptedMediaFileName').textContent = this.files[0] ? this.files[0].name : 'Tidak ada file terpilih';
+      });
     };
   </script>
 </body>
 </html>
-
