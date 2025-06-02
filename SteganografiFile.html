@@ -234,14 +234,14 @@
         </div>
         <div class="space-y-4 mt-6 md:mt-0 relative">
           <div class="text-center">
-            <h4 class="text-lg font-semibold text-gray-200 mb-2">Pratinjau File Cover:</h4>
+            <h4 id="previewCoverTitle" class="text-lg font-semibold text-gray-200 mb-2 hidden">Pratinjau File Cover:</h4>
             <img id="outputImageOriginal" class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800 flex items-center justify-center text-gray-400" alt="File cover Asli" src="https://placehold.co/200x150/374151/9CA3AF?text=File+cover">
             <video id="outputVideoOriginal" controls class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800"></video>
             <audio id="outputAudioOriginal" controls class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800"></audio>
             <p id="outputTextOriginal" class="hidden w-full h-48 overflow-auto text-sm text-gray-200 border border-gray-600 rounded-md shadow-sm bg-gray-800 p-2"></p>
           </div>
           <div class="text-center">
-            <h4 class="text-lg font-semibold text-gray-200 mb-2">Pratinjau File Stego:</h4>
+            <h4 id="previewStegoTitle" class="text-lg font-semibold text-gray-200 mb-2 hidden">Pratinjau File Stego:</h4>
             <img id="outputImageStego" class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800 flex items-center justify-center text-gray-400" alt="File Stego" src="https://placehold.co/200x150/374151/9CA3AF?text=File+Stego">
             <video id="outputVideoStego" controls class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800"></video>
             <audio id="outputAudioStego" controls class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800"></audio>
@@ -296,7 +296,7 @@
               <option value="bin">BIN</option>
             </select>
           </div>
-          <h4 class="text-lg font-semibold text-gray-200 mb-2">File Terdekripsi:</h4>
+          <h4 id="decryptedFileTitle" class="text-lg font-semibold text-gray-200 mb-2 hidden">File Terdekripsi:</h4>
           <video id="decryptedVideo" controls class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800"></video>
           <img id="decryptedImage" class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800" alt="Decrypted">
           <audio id="decryptedAudio" controls class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800"></audio>
@@ -426,6 +426,11 @@
       document.getElementById('decryptedAudio').classList.add('hidden');
       document.getElementById('decryptedText').classList.add('hidden');
 
+      // Sembunyikan juga judul pratinjau
+      document.getElementById('previewCoverTitle').classList.add('hidden');
+      document.getElementById('previewStegoTitle').classList.add('hidden');
+      document.getElementById('decryptedFileTitle').classList.add('hidden'); // Sembunyikan judul file terdekripsi
+
       document.getElementById('outputImageOriginal').classList.remove('image-fade-in');
       document.getElementById('outputImageStego').classList.remove('image-fade-in');
       document.getElementById('decryptedImage').classList.remove('image-fade-in');
@@ -502,10 +507,15 @@
     async function displayOriginalMediaPreview(mediaFile) {
       // Sembunyikan semua elemen pratinjau output sebelumnya
       hideAllOutputPreviews();
+      // Sembunyikan judul pratinjau file cover dan stego
+      document.getElementById('previewCoverTitle').classList.add('hidden');
+      document.getElementById('previewStegoTitle').classList.add('hidden');
 
       if (!mediaFile) {
         return; // Tidak ada file, tidak ada pratinjau
       }
+
+      document.getElementById('previewCoverTitle').classList.remove('hidden'); // Tampilkan judul pratinjau cover
 
       const originalFileType = mediaFile.type.split('/')[0]; // 'image', 'video', 'audio', 'text'
       const originalFileExtension = mediaFile.name.split('.').pop().toLowerCase();
@@ -559,6 +569,7 @@
 
       // Sembunyikan semua elemen pratinjau output sebelumnya (kecuali pratinjau original yang sudah ditampilkan)
       document.getElementById('downloadLink').classList.add('hidden');
+      document.getElementById('previewStegoTitle').classList.add('hidden'); // Sembunyikan judul pratinjau stego saat proses dimulai
 
       try {
         // Tampilkan pratinjau file cover asli (jika belum ditampilkan oleh event listener 'change')
@@ -594,6 +605,8 @@
         // Tampilkan pratinjau file stego dan tautan unduhan
         const stegoFileType = mediaFile.type.split('/')[0];
         const stegoFileExtension = mediaFile.name.split('.').pop() || 'bin';
+
+        document.getElementById('previewStegoTitle').classList.remove('hidden'); // Tampilkan judul pratinjau stego
 
         if (stegoFileType === 'image') {
           const outputImageStego = document.getElementById('outputImageStego');
@@ -631,6 +644,7 @@
 
       } catch (error) {
         showMessage(`Error saat menyisipkan file: ${error.message}`, true);
+        document.getElementById('previewStegoTitle').classList.add('hidden'); // Sembunyikan judul pratinjau stego jika error
       } finally {
         // Sembunyikan indikator memuat
         embedButton.disabled = false;
@@ -650,6 +664,7 @@
       // Sembunyikan semua elemen pratinjau dekripsi sebelumnya
       hideAllOutputPreviews(); // Memastikan semua pratinjau dekripsi juga tersembunyi
       document.getElementById('downloadFileLink').classList.add('hidden');
+      document.getElementById('decryptedFileTitle').classList.add('hidden'); // Sembunyikan judul file terdekripsi
       showMessage('Pilih format file untuk dekripsi.', false);
     };
 
@@ -708,6 +723,8 @@
         const decryptedFileType = getMimeType(selectedFormat).split('/')[0];
         const downloadFileLink = document.getElementById('downloadFileLink');
 
+        document.getElementById('decryptedFileTitle').classList.remove('hidden'); // Tampilkan judul file terdekripsi
+
         if (decryptedFileType === 'video' && selectedFormat === 'mp4') { // Hanya tampilkan video jika formatnya mp4
           const videoElement = document.getElementById('decryptedVideo');
           videoElement.src = decryptedUrl;
@@ -762,6 +779,7 @@
         // Sembunyikan pilihan format file dan tautan unduhan saat terjadi error
         document.getElementById('fileFormatSelection').classList.add('hidden');
         document.getElementById('downloadFileLink').classList.add('hidden');
+        document.getElementById('decryptedFileTitle').classList.add('hidden'); // Sembunyikan judul file terdekripsi jika error
       } finally {
         // Sembunyikan indikator memuat
         decryptButton.disabled = false;
@@ -791,6 +809,11 @@
 
       // Tampilkan tab sembunyikan file secara default saat aplikasi dimuat
       showTab('embed');
+
+      // Sembunyikan judul pratinjau secara default
+      document.getElementById('previewCoverTitle').classList.add('hidden');
+      document.getElementById('previewStegoTitle').classList.add('hidden');
+      document.getElementById('decryptedFileTitle').classList.add('hidden'); // Sembunyikan judul file terdekripsi saat inisialisasi
 
       // Tambahkan event listener untuk memperbarui nama file yang dipilih
       document.getElementById('mediaInput').addEventListener('change', function() {
