@@ -147,14 +147,7 @@
                 <a href="#aplikasi" class="nav-link text-gray-600">Aplikasi</a>
                 <a href="#sejarah" class="nav-link text-gray-600">Sejarah</a>
                 <a href="#deteksi" class="nav-link text-gray-600">Deteksi</a>
-                <div class="relative">
-                    <button id="start-button" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ml-4">Mulai</button>
-                    <div id="start-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 hidden">
-                        <a href="SteganografiFile.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Steganografi Gambar</a>
-                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Steganografi Audio</a>
-                    </div>
                 </div>
-            </div>
             <button id="mobile-menu-button" class="md:hidden text-gray-800">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
             </button>
@@ -165,14 +158,7 @@
             <a href="#aplikasi" class="block py-2 nav-link text-gray-600">Aplikasi</a>
             <a href="#sejarah" class="block py-2 nav-link text-gray-600">Sejarah</a>
             <a href="#deteksi" class="block py-2 nav-link text-gray-600">Deteksi</a>
-            <div class="border-t border-gray-200 mt-2 pt-2">
-                <button id="mobile-start-button" class="w-full text-left py-2 px-4 text-gray-700 font-bold">Mulai</button>
-                <div id="mobile-start-dropdown" class="pl-4 hidden">
-                    <a href="SteganografiFile.html" class="block py-2 text-gray-700 hover:bg-gray-100">Steganografi Gambar</a>
-                    <a href="#" class="block py-2 text-gray-700 hover:bg-gray-100">Steganografi Audio</a>
-                </div>
             </div>
-        </div>
     </header>
 
     <main class="container mx-auto px-6 py-12">
@@ -329,6 +315,16 @@
                     <div class="text-6xl">🔍</div>
                     <p class="text-gray-500 mt-2">Mencari jejak digital yang tak terlihat.</p>
                 </div>
+            </div>
+        </section>
+
+        <section id="start-section" class="mt-20 text-center scroll-in-animation">
+            <h3 class="text-3xl font-bold mb-6 text-gray-900">Siap Menjelajahi Steganografi?</h3>
+            <p class="max-w-xl mx-auto text-lg text-gray-600 mb-8">
+                Klik tombol di bawah untuk memulai perjalanan Anda dalam menyembunyikan dan menemukan pesan rahasia menggunakan Steganografi Gambar.
+            </p>
+            <div class="relative inline-block">
+                <button id="bottom-start-button" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">Mulai Steganografi Gambar</button>
             </div>
         </section>
 
@@ -494,32 +490,13 @@
             });
         });
 
-        // Logika dropdown tombol "Mulai" (desktop)
-        const startButton = document.getElementById('start-button');
-        const startDropdown = document.getElementById('start-dropdown');
-        // Logika dropdown tombol "Mulai" (mobile)
-        const mobileStartButton = document.getElementById('mobile-start-button');
-        const mobileStartDropdown = document.getElementById('mobile-start-dropdown');
-
-        startButton.addEventListener('click', (event) => {
-            event.stopPropagation(); // Mencegah klik segera menutup dropdown
-            startDropdown.classList.toggle('hidden');
-        });
-
-        mobileStartButton.addEventListener('click', (event) => {
-            event.stopPropagation();
-            mobileStartDropdown.classList.toggle('hidden');
-        });
-
-        // Menutup dropdown jika diklik di luar area dropdown
-        document.addEventListener('click', (event) => {
-            if (!startButton.contains(event.target) && !startDropdown.contains(event.target)) {
-                startDropdown.classList.add('hidden');
-            }
-            if (!mobileStartButton.contains(event.target) && !mobileStartDropdown.contains(event.target)) {
-                mobileStartDropdown.classList.add('hidden');
-            }
-        });
+        // Logika untuk tombol "Mulai Steganografi Gambar" di bagian bawah
+        const bottomStartButton = document.getElementById('bottom-start-button');
+        if (bottomStartButton) {
+            bottomStartButton.addEventListener('click', () => {
+                window.location.href = 'SteganografiFile.html';
+            });
+        }
 
         // Logika untuk animasi scroll-in
         const sections = document.querySelectorAll('section.scroll-in-animation');
@@ -534,7 +511,7 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target); // Berhenti mengamati setelah terlihat
+                    // observer.unobserve(entry.target); // Berhenti mengamati setelah terlihat
                 }
             });
         }, observerOptions);
