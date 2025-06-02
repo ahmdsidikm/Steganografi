@@ -232,9 +232,9 @@
             </button>
           </div>
         </div>
-        <div class="space-y-4 mt-6 md:mt-0 relative">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 md:mt-0 relative">
           <div class="text-center">
-            <h4 id="previewCoverTitle" class="text-lg font-semibold text-gray-200 mb-2 hidden">Pratinjau File Cover:</h4>
+            <h4 id="previewCoverTitle" class="text-lg font-semibold text-gray-200 mb-2 hidden">Cover:</h4>
             <img id="outputImageOriginal" class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800 flex items-center justify-center text-gray-400" alt="File cover Asli" src="https://placehold.co/200x150/374151/9CA3AF?text=File+cover">
             <video id="outputVideoOriginal" controls class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800"></video>
             <audio id="outputAudioOriginal" controls class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800"></audio>
@@ -242,21 +242,20 @@
           </div>
 
           <div class="text-center">
-            <h4 id="previewSecretTitle" class="text-lg font-semibold text-gray-200 mb-2 hidden">Pratinjau File yang Disembunyikan:</h4>
+            <h4 id="previewSecretTitle" class="text-lg font-semibold text-gray-200 mb-2 hidden">Sembunyikan:</h4>
             <img id="outputImageSecret" class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800 flex items-center justify-center text-gray-400" alt="File Rahasia" src="https://placehold.co/200x150/374151/9CA3AF?text=File+Rahasia">
             <video id="outputVideoSecret" controls class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800"></video>
             <audio id="outputAudioSecret" controls class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800"></audio>
             <p id="outputTextSecret" class="hidden w-full h-48 overflow-auto text-sm text-gray-200 border border-gray-600 rounded-md shadow-sm bg-gray-800 p-2"></p>
           </div>
           <div class="text-center">
-            <h4 id="previewStegoTitle" class="text-lg font-semibold text-gray-200 mb-2 hidden">Pratinjau File Stego:</h4>
+            <h4 id="previewStegoTitle" class="text-lg font-semibold text-gray-200 mb-2 hidden">Hasil:</h4>
             <img id="outputImageStego" class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800 flex items-center justify-center text-gray-400" alt="File Stego" src="https://placehold.co/200x150/374151/9CA3AF?text=File+Stego">
             <video id="outputVideoStego" controls class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800"></video>
             <audio id="outputAudioStego" controls class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800"></audio>
             <p id="outputTextStego" class="hidden w-full h-48 overflow-auto text-sm text-gray-200 border border-gray-600 rounded-md shadow-sm bg-gray-800 p-2"></p>
             <a id="downloadLink" class="hidden block text-center bg-green-700 text-white py-2 px-3 mt-4 rounded-md hover:bg-green-800 transition-all font-semibold shadow-md text-sm">
-              <i class="fas fa-download mr-2"></i> Unduh File Stego
-            </a>
+              <i class="fas fa-download mr-2"></i> Unduh            </a>
           </div>
         </div>
       </div>
@@ -424,10 +423,10 @@
       document.getElementById('outputAudioOriginal').classList.add('hidden');
       document.getElementById('outputTextOriginal').classList.add('hidden');
 
-      document.getElementById('outputImageSecret').classList.add('hidden'); // Tambahkan ini
-      document.getElementById('outputVideoSecret').classList.add('hidden'); // Tambahkan ini
-      document.getElementById('outputAudioSecret').classList.add('hidden'); // Tambahkan ini
-      document.getElementById('outputTextSecret').classList.add('hidden'); // Tambahkan ini
+      document.getElementById('outputImageSecret').classList.add('hidden');
+      document.getElementById('outputVideoSecret').classList.add('hidden');
+      document.getElementById('outputAudioSecret').classList.add('hidden');
+      document.getElementById('outputTextSecret').classList.add('hidden');
 
       document.getElementById('outputImageStego').classList.add('hidden');
       document.getElementById('outputVideoStego').classList.add('hidden');
@@ -441,12 +440,12 @@
 
       // Sembunyikan juga judul pratinjau
       document.getElementById('previewCoverTitle').classList.add('hidden');
-      document.getElementById('previewSecretTitle').classList.add('hidden'); // Tambahkan ini
+      document.getElementById('previewSecretTitle').classList.add('hidden');
       document.getElementById('previewStegoTitle').classList.add('hidden');
-      document.getElementById('decryptedFileTitle').classList.add('hidden'); // Sembunyikan judul file terdekripsi
+      document.getElementById('decryptedFileTitle').classList.add('hidden');
 
       document.getElementById('outputImageOriginal').classList.remove('image-fade-in');
-      document.getElementById('outputImageSecret').classList.remove('image-fade-in'); // Tambahkan ini
+      document.getElementById('outputImageSecret').classList.remove('image-fade-in');
       document.getElementById('outputImageStego').classList.remove('image-fade-in');
       document.getElementById('decryptedImage').classList.remove('image-fade-in');
     }
@@ -885,7 +884,7 @@
 
       // Sembunyikan judul pratinjau secara default
       document.getElementById('previewCoverTitle').classList.add('hidden');
-      document.getElementById('previewSecretTitle').classList.add('hidden'); // Tambahkan ini
+      document.getElementById('previewSecretTitle').classList.add('hidden');
       document.getElementById('previewStegoTitle').classList.add('hidden');
       document.getElementById('decryptedFileTitle').classList.add('hidden'); // Sembunyikan judul file terdekripsi saat inisialisasi
 
