@@ -8,16 +8,13 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* Memastikan transisi yang mulus untuk elemen UI */
     .transition-all { transition: all 0.3s ease; }
-    /* Gaya dasar untuk body untuk memastikan tinggi penuh dan font */
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #1a202c; /* Latar belakang gelap */
-      color: #e2e8f0; /* Warna teks terang */
-      overflow-x: hidden; /* Sembunyikan overflow horizontal */
+      background-color: #1a202c;
+      color: #e2e8f0;
+      overflow-x: hidden;
     }
-    /* Gaya untuk indikator memuat */
     .loading-spinner {
       border: 4px solid rgba(255, 255, 255, 0.3);
       border-top: 4px solid #fff;
@@ -31,11 +28,10 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* Gaya untuk animasi gambar */
     .image-fade-in {
       animation: fadeInScale 0.5s ease-out forwards;
-      opacity: 0; /* Mulai dengan tidak terlihat */
-      transform: scale(0.95); /* Mulai sedikit lebih kecil */
+      opacity: 0;
+      transform: scale(0.95);
     }
 
     @keyframes fadeInScale {
@@ -49,14 +45,13 @@
       }
     }
 
-    /* Gaya untuk animasi pembuka */
     .splash-screen {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: #1a202c; /* Latar belakang gelap */
+      background-color: #1a202c;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -68,20 +63,20 @@
 
     .splash-screen.fade-out {
       opacity: 0;
-      pointer-events: none; /* Nonaktifkan interaksi setelah fade out */
+      pointer-events: none;
     }
 
     .splash-logo {
       font-size: 3rem;
       font-weight: bold;
-      color: #f97316; /* Warna oranye */
+      color: #f97316;
       animation: bounceIn 1s ease-out;
       margin-bottom: 1rem;
     }
 
     .splash-text {
       font-size: 1.5rem;
-      color: #a0aec0; /* Warna abu-abu terang */
+      color: #a0aec0;
       animation: fadeIn 1.5s ease-out 0.5s forwards;
       opacity: 0;
     }
@@ -118,49 +113,47 @@
       100% { opacity: 1; }
     }
 
-    /* Gaya untuk tab bar */
     .tab-button {
       padding: 0.75rem 1.5rem;
       border-radius: 0.5rem;
       font-weight: 600;
       transition: all 0.3s ease;
       cursor: pointer;
-      color: #e2e8f0; /* Warna teks default */
-      background-color: #4a5568; /* Latar belakang default */
+      color: #e2e8f0;
+      background-color: #4a5568;
     }
 
     .tab-button.active {
-      color: #ffffff; /* Warna teks aktif */
-      background-color: #f97316; /* Latar belakang aktif (oranye) */
+      color: #ffffff;
+      background-color: #f97316;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
 
     .tab-button:hover:not(.active) {
-      background-color: #6a7587; /* Latar belakang hover */
+      background-color: #6a7587;
     }
 
-    /* Gaya untuk input file kustom */
     .custom-file-input-wrapper {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0.5rem 1rem;
-      border: 1px solid #4a5568; /* border-gray-600 */
-      border-radius: 0.375rem; /* rounded-md */
-      background-color: #2d3748; /* bg-gray-800 */
-      color: #e2e8f0; /* text-gray-200 */
+      border: 1px solid #4a5568;
+      border-radius: 0.375rem;
+      background-color: #2d3748;
+      color: #e2e8f0;
       cursor: pointer;
       transition: all 0.2s ease-in-out;
-      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     }
 
     .custom-file-input-wrapper:hover {
-      background-color: #4a5568; /* hover:bg-gray-700 */
+      background-color: #4a5568;
     }
 
     .custom-file-input-wrapper:focus-within {
-      border-color: #f97316; /* focus:border-orange-500 */
-      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.5); /* focus:ring-orange-500 */
+      border-color: #f97316;
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.5);
     }
 
     .custom-file-input-text {
@@ -172,7 +165,7 @@
     }
 
     .custom-file-input-icon {
-      color: #a0aec0; /* text-gray-400 */
+      color: #a0aec0;
     }
   </style>
 </head>
@@ -304,8 +297,8 @@
             </select>
           </div>
           <h4 id="decryptedFileTitle" class="text-lg font-semibold text-gray-200 mb-2 hidden">File Terdekripsi:</h4>
-          <video id="decryptedVideo" controls class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800"></video>
-          <img id="decryptedImage" class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800" alt="Decrypted">
+          <video id="decryptedVideo" controls class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800"></video>
+          <img id="decryptedImage" class="hidden w-full h-48 object-contain border border-gray-600 rounded-md shadow-sm bg-gray-800" alt="Decrypted">
           <audio id="decryptedAudio" controls class="hidden w-full border border-gray-600 rounded-md shadow-sm bg-gray-800"></audio>
           <p id="decryptedText" class="hidden w-full h-48 overflow-auto text-sm text-gray-200 border border-gray-600 rounded-md shadow-sm bg-gray-800 p-2"></p>
           <a id="downloadFileLink" class="hidden block text-center bg-green-700 text-white py-3 px-4 rounded-md hover:bg-green-800 transition-all font-semibold shadow-md">
@@ -324,37 +317,24 @@
   </footer>
 
   <script>
-    /**
-     * Menampilkan pesan status kepada pengguna.
-     * @param {string} msg - Pesan yang akan ditampilkan.
-     * @param {boolean} isError - True jika pesan adalah error, false jika bukan.
-     */
     function showMessage(msg, isError) {
       const statusEl = document.getElementById('statusMessage');
 
-      // Sembunyikan pesan status yang ada
       statusEl.classList.add('hidden');
 
       if (isError) {
-        // Untuk error, tampilkan pesan teks
         statusEl.textContent = msg;
         statusEl.className = `text-center text-base font-medium transition-all py-2 px-4 rounded-md bg-red-800 text-red-200`;
         statusEl.classList.remove('hidden');
-        setTimeout(() => statusEl.classList.add('hidden'), 5000); // Sembunyikan setelah 5 detik
+        setTimeout(() => statusEl.classList.add('hidden'), 5000);
       } else {
-        // Untuk sukses, tampilkan pesan teks
         statusEl.textContent = msg;
         statusEl.className = `text-center text-base font-medium transition-all py-2 px-4 rounded-md bg-green-800 text-green-200`;
         statusEl.classList.remove('hidden');
-        setTimeout(() => statusEl.classList.add('hidden'), 5000); // Sembunyikan setelah 5 detik
+        setTimeout(() => statusEl.classList.add('hidden'), 5000);
       }
     }
 
-    /**
-     * Membaca objek File sebagai ArrayBuffer.
-     * @param {File} file - Objek File yang akan dibaca.
-     * @returns {Promise<ArrayBuffer>} Sebuah promise yang di-resolve dengan ArrayBuffer.
-     */
     function readFileAsArrayBuffer(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -364,11 +344,6 @@
       });
     }
 
-    /**
-     * Membaca objek File sebagai Data URL.
-     * @param {File} file - Objek File yang akan dibaca.
-     * @returns {Promise<string>} Sebuah promise yang di-resolve dengan Data URL.
-     */
     function readFileAsDataURL(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -378,11 +353,6 @@
       });
     }
 
-    /**
-     * Membaca objek File sebagai Teks.
-     * @param {File} file - Objek File yang akan dibaca.
-     * @returns {Promise<string>} Sebuah promise yang di-resolve dengan Teks.
-     */
     function readFileAsText(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -392,11 +362,6 @@
       });
     }
 
-    /**
-     * Mengembalikan tipe MIME untuk ekstensi file yang diberikan.
-     * @param {string} ext - Ekstensi file (misalnya, 'jpg', 'pdf').
-     * @returns {string} Tipe MIME yang sesuai.
-     */
     function getMimeType(ext) {
       const mimeTypes = {
         jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif', bmp: 'image/bmp', webp: 'image/webp',
@@ -409,14 +374,10 @@
         xls: 'application/vnd.ms-excel', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ppt: 'application/vnd.ms-powerpoint', pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         exe: 'application/x-ms-dos-executable', bin: 'application/octet-stream',
-        // Tambahkan tipe MIME lainnya sesuai kebutuhan
       };
-      return mimeTypes[ext.toLowerCase()] || 'application/octet-stream'; // Default ke stream biner generik
+      return mimeTypes[ext.toLowerCase()] || 'application/octet-stream';
     }
 
-    /**
-     * Menyembunyikan semua elemen pratinjau output.
-     */
     function hideAllOutputPreviews() {
       document.getElementById('outputImageOriginal').classList.add('hidden');
       document.getElementById('outputVideoOriginal').classList.add('hidden');
@@ -438,7 +399,6 @@
       document.getElementById('decryptedAudio').classList.add('hidden');
       document.getElementById('decryptedText').classList.add('hidden');
 
-      // Sembunyikan juga judul pratinjau
       document.getElementById('previewCoverTitle').classList.add('hidden');
       document.getElementById('previewSecretTitle').classList.add('hidden');
       document.getElementById('previewStegoTitle').classList.add('hidden');
@@ -450,10 +410,6 @@
       document.getElementById('decryptedImage').classList.remove('image-fade-in');
     }
 
-    /**
-     * Menampilkan tab yang dipilih dengan animasi fade.
-     * @param {string} tabId - ID tab yang akan ditampilkan ('embed' atau 'decrypt').
-     */
     function showTab(tabId) {
       const embedSection = document.getElementById('embedSection');
       const decryptSection = document.getElementById('decryptSection');
@@ -477,49 +433,36 @@
         nextTabButton = showDecryptTabButton;
       }
 
-      // Periksa apakah tab yang dituju sudah aktif
       if (nextSection.classList.contains('opacity-100') && !nextSection.classList.contains('hidden')) {
-          return; // Sudah di tab yang benar, tidak perlu transisi
+          return;
       }
 
-      // Hapus kelas 'active' dari semua tombol tab
       showEmbedTabButton.classList.remove('active');
       showDecryptTabButton.classList.remove('active');
 
-      // Tambahkan kelas 'active' ke tombol tab yang akan diaktifkan
       if (nextTabButton) {
         nextTabButton.classList.add('active');
       }
 
-      // Mulai fade out untuk bagian yang sedang terlihat
       if (!currentSection.classList.contains('hidden')) {
-        currentSection.style.opacity = '0'; // Mulai transisi opacity ke 0
+        currentSection.style.opacity = '0';
         currentSection.addEventListener('transitionend', function handler() {
-          currentSection.classList.add('hidden'); // Sembunyikan elemen setelah transisi opacity selesai
-          currentSection.style.opacity = ''; // Reset opacity untuk penggunaan berikutnya
-          currentSection.removeEventListener('transitionend', handler); // Hapus event listener
+          currentSection.classList.add('hidden');
+          currentSection.style.opacity = '';
+          currentSection.removeEventListener('transitionend', handler);
 
-          // Setelah bagian saat ini tersembunyi, tampilkan dan fade in bagian berikutnya
-          nextSection.classList.remove('hidden'); // Tampilkan elemen
-          // Paksa reflow browser agar transisi opacity berfungsi dengan benar setelah perubahan display
+          nextSection.classList.remove('hidden');
           nextSection.offsetWidth;
-          nextSection.style.opacity = '1'; // Mulai transisi opacity ke 1
-        }, { once: true }); // Event listener hanya akan berjalan sekali
+          nextSection.style.opacity = '1';
+        }, { once: true });
       } else {
-        // Jika bagian saat ini sudah tersembunyi (misalnya, saat pemuatan awal atau beralih langsung dari keadaan tersembunyi)
-        // Cukup tampilkan bagian berikutnya dan fade in
-        nextSection.classList.remove('hidden'); // Tampilkan elemen
-        nextSection.offsetWidth; // Paksa reflow
-        nextSection.style.opacity = '1'; // Mulai transisi opacity ke 1
+        nextSection.classList.remove('hidden');
+        nextSection.offsetWidth;
+        nextSection.style.opacity = '1';
       }
     }
 
-    /**
-     * Menampilkan pratinjau file media asli.
-     * @param {File} mediaFile - Objek File media yang akan dipratinjau.
-     */
     async function displayOriginalMediaPreview(mediaFile) {
-      // Sembunyikan semua elemen pratinjau output sebelumnya kecuali pratinjau file rahasia
       document.getElementById('outputImageOriginal').classList.add('hidden');
       document.getElementById('outputVideoOriginal').classList.add('hidden');
       document.getElementById('outputAudioOriginal').classList.add('hidden');
@@ -529,12 +472,12 @@
       document.getElementById('previewCoverTitle').classList.add('hidden');
 
       if (!mediaFile) {
-        return; // Tidak ada file, tidak ada pratinjau
+        return;
       }
 
-      document.getElementById('previewCoverTitle').classList.remove('hidden'); // Tampilkan judul pratinjau cover
+      document.getElementById('previewCoverTitle').classList.remove('hidden');
 
-      const originalFileType = mediaFile.type.split('/')[0]; // 'image', 'video', 'audio', 'text'
+      const originalFileType = mediaFile.type.split('/')[0];
       const originalFileExtension = mediaFile.name.split('.').pop().toLowerCase();
 
       if (originalFileType === 'image') {
@@ -558,18 +501,10 @@
         const outputTextOriginal = document.getElementById('outputTextOriginal');
         outputTextOriginal.textContent = await readFileAsText(mediaFile);
         outputTextOriginal.classList.remove('hidden');
-      } else {
-        // Untuk tipe file lain, mungkin tidak ada pratinjau langsung
-        // showMessage('Tidak ada pratinjau untuk jenis file cover ini.', false);
       }
     }
 
-    /**
-     * Menampilkan pratinjau file rahasia.
-     * @param {File} secretFile - Objek File rahasia yang akan dipratinjau.
-     */
     async function displaySecretFilePreview(secretFile) {
-      // Sembunyikan semua elemen pratinjau file rahasia sebelumnya
       document.getElementById('outputImageSecret').classList.add('hidden');
       document.getElementById('outputVideoSecret').classList.add('hidden');
       document.getElementById('outputAudioSecret').classList.add('hidden');
@@ -579,12 +514,12 @@
       document.getElementById('previewSecretTitle').classList.add('hidden');
 
       if (!secretFile) {
-        return; // Tidak ada file, tidak ada pratinjau
+        return;
       }
 
-      document.getElementById('previewSecretTitle').classList.remove('hidden'); // Tampilkan judul pratinjau rahasia
+      document.getElementById('previewSecretTitle').classList.remove('hidden');
 
-      const secretFileType = secretFile.type.split('/')[0]; // 'image', 'video', 'audio', 'text'
+      const secretFileType = secretFile.type.split('/')[0];
       const secretFileExtension = secretFile.name.split('.').pop().toLowerCase();
 
       if (secretFileType === 'image') {
@@ -608,14 +543,10 @@
         const outputTextSecret = document.getElementById('outputTextSecret');
         outputTextSecret.textContent = await readFileAsText(secretFile);
         outputTextSecret.classList.remove('hidden');
-      } else {
-        // Untuk tipe file lain, mungkin tidak ada pratinjau langsung
-        // showMessage('Tidak ada pratinjau untuk jenis file rahasia ini.', false);
       }
     }
 
 
-    // Event listener untuk tombol "Sembunyikan File"
     document.getElementById('embedButton').onclick = async () => {
       const mediaFile = document.getElementById('mediaInput').files[0];
       const secretFile = document.getElementById('fileInput').files[0];
@@ -623,42 +554,28 @@
       const embedButtonText = document.getElementById('embedButtonText');
       const embedSpinner = document.getElementById('embedSpinner');
 
-      // Validasi jika kedua file dipilih
       if (!mediaFile || !secretFile) {
         return showMessage('Pilih file cover dan file yang akan disembunyikan!', true);
       }
 
-      // Tampilkan indikator memuat
       embedButton.disabled = true;
       embedButtonText.classList.add('hidden');
       embedSpinner.classList.remove('hidden');
       showMessage('Menyisipkan file...', false);
 
-      // Sembunyikan semua elemen pratinjau output sebelumnya (kecuali pratinjau original dan secret yang sudah ditampilkan)
       document.getElementById('downloadLink').classList.add('hidden');
-      document.getElementById('previewStegoTitle').classList.add('hidden'); // Sembunyikan judul pratinjau stego saat proses dimulai
+      document.getElementById('previewStegoTitle').classList.add('hidden');
 
       try {
-        // Tampilkan pratinjau file cover asli (jika belum ditampilkan oleh event listener 'change')
-        // await displayOriginalMediaPreview(mediaFile); // Ini sudah ditangani oleh event listener 'change'
-        // await displaySecretFilePreview(secretFile); // Ini sudah ditangani oleh event listener 'change'
-
-        // Baca file media dan rahasia sebagai ArrayBuffers
         const mediaBuffer = await readFileAsArrayBuffer(mediaFile);
         const secretBuffer = await readFileAsArrayBuffer(secretFile);
 
-        // Buat Uint8Array baru untuk menggabungkan media, file rahasia, dan ukurannya
-        // Ukuran file rahasia disimpan dalam 4 byte terakhir dari buffer gabungan
         const combinedArray = new Uint8Array(mediaBuffer.byteLength + secretBuffer.byteLength + 4);
 
-        // Salin data media
         combinedArray.set(new Uint8Array(mediaBuffer), 0);
-        // Salin data file rahasia setelah data media
         combinedArray.set(new Uint8Array(secretBuffer), mediaBuffer.byteLength);
 
-        // Dapatkan ukuran file rahasia
         const secretFileSize = secretBuffer.byteLength;
-        // Simpan ukuran dalam 4 byte terakhir (big-endian)
         combinedArray.set([
           (secretFileSize >> 24) & 0xFF,
           (secretFileSize >> 16) & 0xFF,
@@ -666,15 +583,13 @@
           secretFileSize & 0xFF
         ], mediaBuffer.byteLength + secretBuffer.byteLength);
 
-        // Buat Blob dari data gabungan dengan tipe MIME media asli
         const outputBlob = new Blob([combinedArray], { type: mediaFile.type });
         const outputUrl = URL.createObjectURL(outputBlob);
 
-        // Tampilkan pratinjau file stego dan tautan unduhan
         const stegoFileType = mediaFile.type.split('/')[0];
         const stegoFileExtension = mediaFile.name.split('.').pop() || 'bin';
 
-        document.getElementById('previewStegoTitle').classList.remove('hidden'); // Tampilkan judul pratinjau stego
+        document.getElementById('previewStegoTitle').classList.remove('hidden');
 
         if (stegoFileType === 'image') {
           const outputImageStego = document.getElementById('outputImageStego');
@@ -690,7 +605,6 @@
           outputAudioStego.src = outputUrl;
           outputAudioStego.classList.remove('hidden');
         } else if (stegoFileExtension === 'txt') {
-          // Untuk teks, coba baca sebagai teks jika tipe file asli adalah teks
           try {
             const textBlob = new Blob([combinedArray], { type: 'text/plain' });
             const textReader = new FileReader();
@@ -703,11 +617,7 @@
             console.error("Could not read stego text as plain text:", e);
           }
         }
-        else {
-          // Untuk tipe file lain, mungkin tidak ada pratinjau langsung
-          // showMessage('Tidak ada pratinjau untuk jenis file stego ini.', false);
-        }
-
+        
         const downloadLink = document.getElementById('downloadLink');
         downloadLink.href = outputUrl;
         downloadLink.download = `stego_file.${stegoFileExtension}`;
@@ -716,31 +626,26 @@
 
       } catch (error) {
         showMessage(`Error saat menyisipkan file: ${error.message}`, true);
-        document.getElementById('previewStegoTitle').classList.add('hidden'); // Sembunyikan judul pratinjau stego jika error
+        document.getElementById('previewStegoTitle').classList.add('hidden');
       } finally {
-        // Sembunyikan indikator memuat
         embedButton.disabled = false;
         embedButtonText.classList.remove('hidden');
         embedSpinner.classList.add('hidden');
       }
     };
 
-    // Event listener untuk tombol "Dekripsi File"
     document.getElementById('decryptButton').onclick = () => {
       const encryptedMedia = document.getElementById('encryptedMediaInput').files[0];
       if (!encryptedMedia) {
         return showMessage('Pilih file media terenkripsi untuk dekripsi!', true);
       }
-      // Tampilkan dropdown pilihan format file
       document.getElementById('fileFormatSelection').classList.remove('hidden');
-      // Sembunyikan semua elemen pratinjau dekripsi sebelumnya
-      hideAllOutputPreviews(); // Memastikan semua pratinjau dekripsi juga tersembunyi
+      hideAllOutputPreviews();
       document.getElementById('downloadFileLink').classList.add('hidden');
-      document.getElementById('decryptedFileTitle').classList.add('hidden'); // Sembunyikan judul file terdekripsi
+      document.getElementById('decryptedFileTitle').classList.add('hidden');
       showMessage('Pilih format file untuk dekripsi.', false);
     };
 
-    // Event listener untuk dropdown pilihan format file selama dekripsi
     document.getElementById('fileFormat').onchange = async function() {
       const selectedFormat = this.value;
       const decryptButton = document.getElementById('decryptButton');
@@ -748,11 +653,9 @@
       const decryptSpinner = document.getElementById('decryptSpinner');
 
       if (!selectedFormat) {
-        // Jika tidak ada format yang dipilih, jangan lakukan apa-apa
         return;
       }
 
-      // Tampilkan indikator memuat
       decryptButton.disabled = true;
       decryptButtonText.classList.add('hidden');
       decryptSpinner.classList.remove('hidden');
@@ -767,37 +670,30 @@
         const buffer = await readFileAsArrayBuffer(encryptedMedia);
         const uint8Array = new Uint8Array(buffer);
 
-        // Ekstrak ukuran file tersembunyi dari 4 byte terakhir
         const hiddenFileSize = (uint8Array[uint8Array.length - 4] << 24) |
                                (uint8Array[uint8Array.length - 3] << 16) |
                                (uint8Array[uint8Array.length - 2] << 8) |
                                uint8Array[uint8Array.length - 1];
 
-        // Validasi ukuran yang diekstrak
         if (hiddenFileSize <= 0 || hiddenFileSize > buffer.byteLength - 4) {
           throw new Error('Tidak dapat menemukan file tersembunyi atau ukuran file tidak valid. File mungkin tidak berisi data tersembunyi atau rusak.');
         }
 
-        // Hitung posisi awal data file tersembunyi
         const hiddenFileStart = buffer.byteLength - 4 - hiddenFileSize;
-        // Ekstrak ArrayBuffer file tersembunyi
         const hiddenFileBuffer = buffer.slice(hiddenFileStart, buffer.byteLength - 4);
 
-        // Buat Blob dari data file tersembunyi dengan tipe MIME yang dipilih
         const decryptedBlob = new Blob([hiddenFileBuffer], { type: getMimeType(selectedFormat) });
         const decryptedUrl = URL.createObjectURL(decryptedBlob);
 
-        // Sembunyikan semua elemen pratinjau dekripsi sebelumnya
         hideAllOutputPreviews();
-        document.getElementById('downloadFileLink').classList.add('hidden'); // Pastikan tautan unduhan tersembunyi di awal
+        document.getElementById('downloadFileLink').classList.add('hidden');
 
-        // Tampilkan konten terdekripsi berdasarkan format yang dipilih
         const decryptedFileType = getMimeType(selectedFormat).split('/')[0];
         const downloadFileLink = document.getElementById('downloadFileLink');
 
-        document.getElementById('decryptedFileTitle').classList.remove('hidden'); // Tampilkan judul file terdekripsi
+        document.getElementById('decryptedFileTitle').classList.remove('hidden');
 
-        if (decryptedFileType === 'video' && selectedFormat === 'mp4') { // Hanya tampilkan video jika formatnya mp4
+        if (decryptedFileType === 'video' && selectedFormat === 'mp4') {
           const videoElement = document.getElementById('decryptedVideo');
           videoElement.src = decryptedUrl;
           videoElement.classList.remove('hidden');
@@ -833,70 +729,57 @@
             showMessage('Dekripsi file berhasil!', false);
           } catch (e) {
             showMessage(`Error saat membaca file teks terdekripsi: ${e.message}`, true);
-            // Fallback to download link if text parsing fails
             downloadFileLink.href = decryptedUrl;
             downloadFileLink.download = `decrypted_file.${selectedFormat}`;
             downloadFileLink.classList.remove('hidden');
           }
         }
         else {
-          // Untuk tipe file terdekripsi lainnya, tampilkan tautan unduhan
           downloadFileLink.href = decryptedUrl;
-          downloadFileLink.download = `decrypted_file.${selectedFormat}`; // Sarankan nama file
-          downloadFileLink.classList.remove('hidden'); // Tampilkan tautan unduhan
+          downloadFileLink.download = `decrypted_file.${selectedFormat}`;
+          downloadFileLink.classList.remove('hidden');
           showMessage('Dekripsi file berhasil!', false);
         }
       } catch (error) {
         showMessage(`Error saat mendekripsi file: ${error.message}`, true);
-        // Sembunyikan pilihan format file dan tautan unduhan saat terjadi error
         document.getElementById('fileFormatSelection').classList.add('hidden');
         document.getElementById('downloadFileLink').classList.add('hidden');
-        document.getElementById('decryptedFileTitle').classList.add('hidden'); // Sembunyikan judul file terdekripsi jika error
+        document.getElementById('decryptedFileTitle').classList.add('hidden');
       } finally {
-        // Sembunyikan indikator memuat
         decryptButton.disabled = false;
         decryptButtonText.classList.remove('hidden');
         decryptSpinner.classList.add('hidden');
       }
     };
 
-    // Logika animasi pembuka dan tab bar
     window.onload = () => {
       const splashScreen = document.getElementById('splashScreen');
       const body = document.body;
 
-      // Sembunyikan splash screen setelah 2 detik
       setTimeout(() => {
         splashScreen.classList.add('fade-out');
-        // Hapus splash screen dari DOM setelah transisi selesai
         splashScreen.addEventListener('transitionend', () => {
           splashScreen.remove();
-          body.style.overflow = 'auto'; // Kembalikan overflow setelah animasi selesai
+          body.style.overflow = 'auto';
         });
-      }, 2000); // Durasi animasi splash screen
+      }, 2000);
 
-      // Inisialisasi event listener untuk tombol tab
       document.getElementById('showEmbedTab').addEventListener('click', () => showTab('embed'));
       document.getElementById('showDecryptTab').addEventListener('click', () => showTab('decrypt'));
 
-      // Tampilkan tab sembunyikan file secara default saat aplikasi dimuat
       showTab('embed');
 
-      // Sembunyikan judul pratinjau secara default
       document.getElementById('previewCoverTitle').classList.add('hidden');
       document.getElementById('previewSecretTitle').classList.add('hidden');
       document.getElementById('previewStegoTitle').classList.add('hidden');
-      document.getElementById('decryptedFileTitle').classList.add('hidden'); // Sembunyikan judul file terdekripsi saat inisialisasi
+      document.getElementById('decryptedFileTitle').classList.add('hidden');
 
-      // Tambahkan event listener untuk memperbarui nama file yang dipilih
       document.getElementById('mediaInput').addEventListener('change', function() {
         document.getElementById('mediaFileName').textContent = this.files[0] ? this.files[0].name : 'Tidak ada file terpilih';
-        // Panggil fungsi pratinjau langsung di sini
         displayOriginalMediaPreview(this.files[0]);
       });
       document.getElementById('fileInput').addEventListener('change', function() {
         document.getElementById('secretFileName').textContent = this.files[0] ? this.files[0].name : 'Tidak ada file terpilih';
-        // Panggil fungsi pratinjau file rahasia di sini
         displaySecretFilePreview(this.files[0]);
       });
       document.getElementById('encryptedMediaInput').addEventListener('change', function() {
