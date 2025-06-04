@@ -570,6 +570,9 @@
         const mediaBuffer = await readFileAsArrayBuffer(mediaFile);
         const secretBuffer = await readFileAsArrayBuffer(secretFile);
 
+        // Simulate a 3-second loading time
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
         const combinedArray = new Uint8Array(mediaBuffer.byteLength + secretBuffer.byteLength + 4);
 
         combinedArray.set(new Uint8Array(mediaBuffer), 0);
@@ -634,16 +637,57 @@
       }
     };
 
-    document.getElementById('decryptButton').onclick = () => {
+    document.getElementById('decryptButton').onclick = async () => {
       const encryptedMedia = document.getElementById('encryptedMediaInput').files[0];
+      const decryptButton = document.getElementById('decryptButton');
+      const decryptButtonText = document.getElementById('decryptButtonText');
+      const decryptSpinner = document.getElementById('decryptSpinner');
+
       if (!encryptedMedia) {
         return showMessage('Pilih file media terenkripsi untuk dekripsi!', true);
       }
-      document.getElementById('fileFormatSelection').classList.remove('hidden');
+
+      decryptButton.disabled = true;
+      decryptButtonText.classList.add('hidden');
+      decryptSpinner.classList.remove('hidden');
+      showMessage('Memeriksa file tersembunyi...', false);
+
+      document.getElementById('fileFormatSelection').classList.add('hidden');
       hideAllOutputPreviews();
       document.getElementById('downloadFileLink').classList.add('hidden');
       document.getElementById('decryptedFileTitle').classList.add('hidden');
-      showMessage('Pilih format file untuk dekripsi.', false);
+      document.getElementById('fileFormat').value = ''; // Reset dropdown
+
+      try {
+        const buffer = await readFileAsArrayBuffer(encryptedMedia);
+        const uint8Array = new Uint8Array(buffer);
+
+        // Check if the file is large enough to contain the size indicator (at least 4 bytes)
+        if (uint8Array.length < 4) {
+          throw new Error('File terlalu kecil untuk berisi data tersembunyi.');
+        }
+
+        const hiddenFileSize = (uint8Array[uint8Array.length - 4] << 24) |
+                               (uint8Array[uint8Array.length - 3] << 16) |
+                               (uint8Array[uint8Array.length - 2] << 8) |
+                               uint8Array[uint8Array.length - 1];
+
+        if (hiddenFileSize <= 0 || hiddenFileSize > buffer.byteLength - 4) {
+          throw new Error('Tidak dapat menemukan file tersembunyi atau ukuran file tidak valid. File mungkin tidak berisi data tersembunyi atau rusak.');
+        }
+
+        // If a hidden file is detected, show the format selection
+        document.getElementById('fileFormatSelection').classList.remove('hidden');
+        showMessage('File tersembunyi terdeteksi. Pilih format file untuk dekripsi.', false);
+
+      } catch (error) {
+        showMessage(`Error: ${error.message}`, true);
+        document.getElementById('fileFormatSelection').classList.add('hidden');
+      } finally {
+        decryptButton.disabled = false;
+        decryptButtonText.classList.remove('hidden');
+        decryptSpinner.classList.add('hidden');
+      }
     };
 
     document.getElementById('fileFormat').onchange = async function() {
@@ -669,6 +713,9 @@
 
         const buffer = await readFileAsArrayBuffer(encryptedMedia);
         const uint8Array = new Uint8Array(buffer);
+
+        // Simulate a 3-second loading time for decryption
+        await new Promise(resolve => setTimeout(resolve, 3000));
 
         const hiddenFileSize = (uint8Array[uint8Array.length - 4] << 24) |
                                (uint8Array[uint8Array.length - 3] << 16) |
@@ -789,3 +836,4 @@
   </script>
 </body>
 </html>
+
